@@ -1,5 +1,5 @@
 
-# 🗓️ Week 1: Feature Definition & System Architecture
+# 🚀 Feature Definition & System Architecture
 
 ## 🎯 Goal
 Design and define the overall functionality, core features, and architecture for the LLM-powered chatbot microservice platform.
