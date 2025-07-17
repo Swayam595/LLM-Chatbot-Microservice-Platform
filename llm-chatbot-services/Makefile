@@ -1,10 +1,13 @@
 .PHONY: up down restart build shell lint test format
 
 up:
-	docker-compose up --build
+	docker-compose up
 
 down:
 	docker-compose down
+
+build-up:
+	docker-compose up --build
 
 restart:
 	docker-compose down && docker-compose up --build
