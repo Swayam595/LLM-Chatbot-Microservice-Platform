@@ -57,13 +57,13 @@ llm-chatbot/
 ├── README.md
 │
 ├── services/
-│   ├── auth-service/
+│   ├── auth_service/
 │   │   ├── app/
 │   │   ├── tests/
 │   │   └── pyproject.toml
-│   ├── chatbot-service/
-│   ├── conversation-service/
-│   └── api-gateway/
+│   ├── chatbot_service/
+│   ├── conversatio_service/
+│   └── api_gateway/
 │
 └── shared/               <-- Common utilities (e.g., logger, DB helpers)
 ```
