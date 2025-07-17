@@ -1,16 +1,15 @@
-[project]
+[tool.poetry]
 name = "chatbot-service"
 version = "0.1.0"
 description = "Core chatbot logic for processing prompts, generating responses using LLMs, and invoking tools or agents."
-authors = [
-    {name = "Swayam Swarooop Mishra",email = "swayam.swaroop175@gmail.com"}
-]
-readme = "README.md"
-requires-python = ">=3.9"
-dependencies = [
-]
+authors = ["Swayam Swarooop Mishra <swayam.swaroop175@gmail.com>"]
+packages = [{ include = "app" }]
 
+[tool.poetry.dependencies]
+python = "^3.9"
+fastapi = "^0.110.0"
+uvicorn = "^0.29.0"
 
 [build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
+requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
