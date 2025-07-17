@@ -47,6 +47,27 @@ A step-by-step implementation roadmap for building an LLM-based chatbot in Pytho
 - `docker-compose` to orchestrate
 - `Makefile` or helper scripts for lifecycle
 
+```
+llm-chatbot/
+│
+├── pyproject.toml        <-- Poetry config file (replaces requirements.txt)
+├── poetry.lock
+├── docker-compose.yml    <-- Dev environment orchestration
+├── Makefile              <-- Dev commands
+├── README.md
+│
+├── services/
+│   ├── auth-service/
+│   │   ├── app/
+│   │   ├── tests/
+│   │   └── pyproject.toml
+│   ├── chatbot-service/
+│   ├── conversation-service/
+│   └── api-gateway/
+│
+└── shared/               <-- Common utilities (e.g., logger, DB helpers)
+```
+
 ---
 
 ## 🔹 Phase 3: Core Services Implementation
