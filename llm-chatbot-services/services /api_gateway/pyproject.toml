@@ -1,0 +1,16 @@
+[project]
+name = "api-gateway"
+version = "0.1.0"
+description = "Acts as the single entry point to all services, routing requests and handling authentication, logging, and validation."
+authors = [
+    {name = "Swayam Swarooop Mishra",email = "swayam.swaroop175@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
