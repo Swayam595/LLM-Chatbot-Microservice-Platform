@@ -9,67 +9,67 @@ services:
       - "8001:8001"
     volumes:
       - ./services/auth_service:/app
-    depends_on:
-      - postgres
-    environment:
-      - DATABASE_URL=postgresql://user:password@postgres:5432/auth_db
+    # depends_on:
+    #   - postgres
+    # environment:
+    #   - DATABASE_URL=postgresql://user:password@postgres:5432/auth_db
 
-  chatbot-service:
-    build: ./services/chatbot_service
-    container_name: chatbot-service
-    command: poetry run uvicorn app.main:app --host 0.0.0.0 --port 8002 --reload
-    ports:
-      - "8002:8002"
-    volumes:
-      - ./services/chatbot_service:/app
-    environment:
-      - OPENAI_API_KEY=your-openai-key
+#   chatbot-service:
+#     build: ./services/chatbot_service
+#     container_name: chatbot-service
+#     command: poetry run uvicorn app.main:app --host 0.0.0.0 --port 8002 --reload
+#     ports:
+#       - "8002:8002"
+#     volumes:
+#       - ./services/chatbot_service:/app
+#     environment:
+#       - OPENAI_API_KEY=your-openai-key
 
-  conversation-service:
-    build: ./services/conversation_service
-    container_name: conversation-service
-    command: poetry run uvicorn app.main:app --host 0.0.0.0 --port 8003 --reload
-    ports:
-      - "8003:8003"
-    volumes:
-      - ./services/conversation_service:/app
-    depends_on:
-      - postgres
-      - redis
-    environment:
-      - DATABASE_URL=postgresql://user:password@postgres:5432/convo_db
-      - REDIS_URL=redis://redis:6379
+#   conversation-service:
+#     build: ./services/conversation_service
+#     container_name: conversation-service
+#     command: poetry run uvicorn app.main:app --host 0.0.0.0 --port 8003 --reload
+#     ports:
+#       - "8003:8003"
+#     volumes:
+#       - ./services/conversation_service:/app
+#     depends_on:
+#       - postgres
+#       - redis
+#     environment:
+#       - DATABASE_URL=postgresql://user:password@postgres:5432/convo_db
+#       - REDIS_URL=redis://redis:6379
 
-  api-gateway:
-    build: ./services/api_gateway
-    container_name: api-gateway
-    command: poetry run uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
-    ports:
-      - "8000:8000"
-    volumes:
-      - ./services/api_gateway:/app
-    depends_on:
-      - auth-service
-      - chatbot-service
-      - conversation-service
+#   api-gateway:
+#     build: ./services/api_gateway
+#     container_name: api-gateway
+#     command: poetry run uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+#     ports:
+#       - "8000:8000"
+#     volumes:
+#       - ./services/api_gateway:/app
+#     depends_on:
+#       - auth-service
+#       - chatbot-service
+#       - conversation-service
 
-  postgres:
-    image: postgres:15
-    container_name: postgres
-    ports:
-      - "5432:5432"
-    environment:
-      - POSTGRES_USER=user
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=auth_db
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+#   postgres:
+#     image: postgres:15
+#     container_name: postgres
+#     ports:
+#       - "5432:5432"
+#     environment:
+#       - POSTGRES_USER=user
+#       - POSTGRES_PASSWORD=password
+#       - POSTGRES_DB=auth_db
+#     volumes:
+#       - postgres_data:/var/lib/postgresql/data
 
-  redis:
-    image: redis:7
-    container_name: redis
-    ports:
-      - "6379:6379"
+#   redis:
+#     image: redis:7
+#     container_name: redis
+#     ports:
+#       - "6379:6379"
 
-volumes:
-  postgres_data:
+# volumes:
+#   postgres_data:
