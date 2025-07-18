@@ -20,6 +20,9 @@ RUN poetry config virtualenvs.create false \
 # Copy service code
 COPY app /app/app
 
+# Copy .env file
+COPY .env /app/.env
+
 # Expose port
 EXPOSE 8001
 
