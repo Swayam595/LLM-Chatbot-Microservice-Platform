@@ -3,6 +3,7 @@ from passlib.context import CryptContext
 from app.repositories.user_repository import UserRepository
 from app.schemas import UserCreate
 from fastapi import HTTPException
+from app.models import User
 
 class UserService:
     """Service for user-related business logic"""
@@ -11,19 +12,19 @@ class UserService:
         self.user_repository = user_repository
         self.pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-    def register_user(self, user: UserCreate):
+    async def register_user(self, user: UserCreate):
         """Register a new user"""
-        if self.user_repository.get_user_by_email(user.email):
+        if await self.user_repository.get_user_by_email(user.email):
             raise HTTPException(status_code=400, detail="Email already registered")
         
         hashed_pw = self.__hash_password(user.password)
-        user_data = {
-            "username": user.username,
-            "email": user.email,
-            "hashed_password": hashed_pw
-        }
+        user_data = User(
+            username=user.username,
+            email=user.email,
+            hashed_password=hashed_pw
+        )
 
-        self.user_repository.add_user(user_data)
+        await self.user_repository.add_user(user_data)
 
         return {"message": "User registered successfully"} 
 

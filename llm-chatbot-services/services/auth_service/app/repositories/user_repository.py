@@ -1,21 +1,22 @@
 """Repository for user data access"""
-from typing import List, Dict, Optional
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.future import select
+from app.models import User
 
 class UserRepository:
     """Repository for user data access"""
-    def __init__(self):
+    def __init__(self, db: AsyncSession):
         """Initialize the user repository"""
         # Simulate a user database
-        self._users: List[Dict] = []
+        self.__db = db
 
-    def get_user_by_email(self, email: str) -> Optional[Dict]:
+    async def get_user_by_email(self, email: str) -> User | None:
         """Get a user by email"""
-        return next((u for u in self._users if u["email"] == email), None)
+        result = await self.__db.execute(select(User).where(User.email == email))
+        return result.scalars().first()
 
-    def add_user(self, user_data: Dict) -> None:
-        """Add a user to the repository"""
-        self._users.append(user_data)
-
-    def all_users(self) -> List[Dict]:
-        """Get all users"""
-        return self._users 
+    async def add_user(self, user: User) -> None:
+        """Add a user to the database"""
+        self.__db.add(user)
+        await self.__db.commit()
+        await self.__db.refresh(user)

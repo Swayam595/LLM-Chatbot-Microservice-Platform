@@ -1,14 +1,21 @@
 """Module for the auth service"""
-from fastapi import FastAPI
+from contextlib import asynccontextmanager
+from fastapi import FastAPI, Depends
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from app.schemas import UserCreate
 from app.repositories.user_repository import UserRepository
 from app.services.user_service import UserService
+from app.services.database import get_db, init_db, shutdown_db
 
-app = FastAPI()
+@asynccontextmanager
+async def lifespan(_fastapi_app: FastAPI):
+    """Lifespan for the application"""
+    await init_db()
+    yield
+    await shutdown_db()
 
-# Initialize repository and service
-user_repository = UserRepository()
-user_service = UserService(user_repository)
+app = FastAPI(lifespan=lifespan)
 
 @app.get("/")
 def read_root():
@@ -21,6 +28,10 @@ def health_check():
     return {"status": "ok"}
 
 @app.post("/register")
-def register(user: UserCreate):
-    """Register a new user"""
-    return user_service.register_user(user)
+async def register(
+    user: UserCreate,
+    db: AsyncSession = Depends(get_db),
+):
+    user_repository = UserRepository(db)
+    user_service = UserService(user_repository)
+    return await user_service.register_user(user)
