@@ -1,4 +1,5 @@
 {
-    "cSpell.ignorePaths": [".gitignore"]
+    "cSpell.ignorePaths": [".gitignore"],
+    "cSpell.ignoreRegExpList": ["/```.*?```/g", "/'.*?'/g", "/\".*?\"/g"]
 }
   
