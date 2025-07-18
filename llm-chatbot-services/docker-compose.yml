@@ -10,7 +10,7 @@ services:
     depends_on:
       - postgres
     environment:
-      - DATABASE_URL=postgresql://user:password@postgres:5432/auth_db
+      - DATABASE_URL=postgresql+asyncpg://user:password@postgres:5432/auth_db
 
   chatbot-service:
     build: ./services/chatbot_service
@@ -35,7 +35,7 @@ services:
       - postgres
       - redis
     environment:
-      - DATABASE_URL=postgresql://user:password@postgres:5432/convo_db
+      - DATABASE_URL=postgresql+asyncpg://user:password@postgres:5432/convo_db
       - REDIS_URL=redis://redis:6379
 
   api-gateway:
