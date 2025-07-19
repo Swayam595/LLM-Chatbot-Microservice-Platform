@@ -1,16 +1,20 @@
 """Service for user-related business logic"""
+from config import AppConfig
 from fastapi import HTTPException
+from app.services.jwt_utils import JWTUtils
 from app.repositories.user_repository import UserRepository
-from app.schemas import UserCreate
+from app.schemas import UserCreate, UserLogin
 from app.models import User
 from app.services.password import PasswordService
 
 class UserService:
     """Service for user-related business logic"""
-    def __init__(self, user_repository: UserRepository):
+    def __init__(self, user_repository: UserRepository, app_config: AppConfig):
         """Initialize the user service"""
         self.user_repository = user_repository
         self.password_service = PasswordService()
+        self.app_config = app_config
+        self.jwt_utils = JWTUtils(app_config)
 
     async def register_user(self, user: UserCreate):
         """Register a new user"""
@@ -27,3 +31,16 @@ class UserService:
         await self.user_repository.add_user(user_data)
 
         return {"message": "User registered successfully"}
+
+    async def login_user(self, credentials: UserLogin):
+        """Login's an User"""
+        user = await self.user_repository.get_user_by_email(credentials.email)
+
+        if not user:
+            raise HTTPException(status_code=401, detail="Invalid credentials")
+
+        if not self.password_service.verify(credentials.password, user.hashed_password):
+            raise HTTPException(status_code=401, detail="Invalid credentials")
+
+        token = self.jwt_utils.create_access_token({"sub": user.email})
+        return {"access_token": token, "token_type": "bearer"}

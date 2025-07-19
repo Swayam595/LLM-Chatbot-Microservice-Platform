@@ -12,8 +12,8 @@ class UserRepository:
 
     async def get_user_by_email(self, email: str) -> User | None:
         """Get a user by email"""
-        result = await self.__db.execute(select(User).where(User.email == email))
-        return result.scalars().first()
+        user = await self.__db.execute(select(User).where(User.email == email))
+        return user.scalars().first()
 
     async def add_user(self, user: User) -> None:
         """Add a user to the database"""

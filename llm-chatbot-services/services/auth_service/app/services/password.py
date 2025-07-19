@@ -10,3 +10,7 @@ class PasswordService:
     def hash_password(self, password: str) -> str:
         """Hash a password"""
         return self.pwd_context.hash(password)
+
+    def verify(self, password, hashed_password):
+        """Verify Password"""
+        return self.pwd_context.verify(password, hashed_password)
