@@ -1,0 +1,9 @@
+{
+    "python.analysis.extraPaths": [
+        "${workspaceFolder}/shared"
+    ],
+    "python.linting.pylintArgs": [
+        "--init-hook",
+        "import sys; sys.path.append('${workspaceFolder}/shared')"
+    ]
+}
