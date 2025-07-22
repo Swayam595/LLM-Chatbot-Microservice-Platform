@@ -19,7 +19,7 @@ logger.add(
     format=(
         "{time:YYYY-MM-DD HH:mm:ss} | "
         "<level>{level}</level> | "
-        "<cyan>{name}:{line}</cyan> - "
+        "<cyan>{name}:{function}:{line}</cyan> - "
         "<level>{message}</level>"
     ),
     enqueue=True,
