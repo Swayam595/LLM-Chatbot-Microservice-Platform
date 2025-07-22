@@ -3,10 +3,18 @@ name = "llm-chatbot-services"
 version = "0.1.0"
 description = "LLM-powered chatbot microservice platform"
 authors = ["Swayam Swarooop Mishra <swayam.swaroop175@gmail.com>"]
+package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.9"
 python-dotenv = "^1.1.1"
+
+# Local editable installs for all services and shared lib
+shared = {path = "./shared", develop = true}
+auth-service = {path = "./services/auth_service", develop = true}
+api-gateway = {path = "./services/api_gateway", develop = true}
+chatbot-service = {path = "./services/chatbot_service", develop = true}
+conversation-service = {path = "./services/conversation_service", develop = true}
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
