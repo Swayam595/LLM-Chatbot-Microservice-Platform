@@ -1,36 +1,45 @@
 services:
   auth-service:
-    build: ./services/auth_service
+    build:
+      context: .
+      dockerfile: ./services/auth_service/dockerfile
     container_name: auth-service
     command: poetry run uvicorn app.main:app --host 0.0.0.0 --port 8001 --reload
     ports:
       - "8001:8001"
     volumes:
-      - ./services/auth_service:/app
+      - ./services/auth_service/app:/app/app
+      - ./shared:/app/shared
     depends_on:
       - postgres
     environment:
       - DATABASE_URL=postgresql+asyncpg://user:password@postgres:5432/auth_db
 
   chatbot-service:
-    build: ./services/chatbot_service
+    build:
+      context: .
+      dockerfile: ./services/chatbot_service/dockerfile
     container_name: chatbot-service
     command: poetry run uvicorn app.main:app --host 0.0.0.0 --port 8002 --reload
     ports:
       - "8002:8002"
     volumes:
-      - ./services/chatbot_service:/app
+      - ./services/chatbot_service/app:/app/app
+      - ./shared:/app/shared
     environment:
       - OPENAI_API_KEY=your-openai-key
 
   conversation-service:
-    build: ./services/conversation_service
+    build:
+      context: .
+      dockerfile: ./services/conversation_service/dockerfile
     container_name: conversation-service
     command: poetry run uvicorn app.main:app --host 0.0.0.0 --port 8003 --reload
     ports:
       - "8003:8003"
     volumes:
-      - ./services/conversation_service:/app
+      - ./services/conversation_service/app:/app/app
+      - ./shared:/app/shared
     depends_on:
       - postgres
       - redis
@@ -39,13 +48,16 @@ services:
       - REDIS_URL=redis://redis:6379
 
   api-gateway:
-    build: ./services/api_gateway
+    build:
+      context: .
+      dockerfile: ./services/api_gateway/dockerfile
     container_name: api-gateway
     command: poetry run uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
     ports:
       - "8000:8000"
     volumes:
-      - ./services/api_gateway:/app
+      - ./services/api_gateway/app:/app/app
+      - ./shared:/app/shared
     depends_on:
       - auth-service
       - chatbot-service

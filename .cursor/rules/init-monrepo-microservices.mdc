@@ -1,0 +1,191 @@
+---
+name: init_microservices
+description: Initializes a Python monorepo with multiple microservices and a shared library, including Docker and VS Code configuration.
+---
+
+### Request
+
+Create a Python microservice monorepo named `my-new-project` with the services `service-a` and `service-b`.
+
+### Instructions
+
+You are an expert in Python microservice architecture. Your task is to generate a complete, runnable monorepo project based on the user's request. The user will provide a root project name and a list of service names.
+
+Follow these steps precisely:
+
+**1. Establish the Root Structure**
+
+- Create the root directory for the project: `mkdir {project_name}`
+- Change into the new directory: `cd {project_name}`
+- Create the core directories: `mkdir services shared`
+
+**2. Create the Shared Package**
+
+This package will be installed as a local dependency by each service.
+
+- Create the source directory for the shared package: `mkdir shared/shared`
+- Create `shared/pyproject.toml` with the following content. This defines it as a package named `shared` and tells Poetry where the source code is.
+  ```toml
+  [tool.poetry]
+  name = "shared"
+  version = "0.1.0"
+  description = "Shared utilities for the microservices."
+  authors = ["Your Name <you@example.com>"]
+  packages = [{include = "shared"}]
+
+  [tool.poetry.dependencies]
+  python = "^3.10"
+  loguru = "^0.7.0"
+
+  [build-system]
+  requires = ["poetry-core"]
+  build-backend = "poetry.core.masonry.api"
+  ```
+- Create a sample utility file `shared/shared/logger.py`:
+  ```python
+  """A simple configurable logger."""
+  import sys
+  from loguru import logger
+
+  def get_logger(service_name: str):
+      """Returns a logger configured for a specific service."""
+      logger.remove()
+      logger.add(sys.stderr, format=f"<green>{{time:YYYY-MM-DD HH:mm:ss}}</green> | <level>{{level: <8}}</level> | <cyan>{service_name}</cyan> | <cyan>{{name}}:{{function}}:{{line}}</cyan> - <level>{{message}}</level>")
+      return logger
+  ```
+- Create `shared/shared/__init__.py` to export the utility:
+  ```python
+  """Shared utilities."""
+  from .logger import get_logger
+
+  __all__ = ["get_logger"]
+  ```
+
+**3. Scaffold Each Microservice**
+
+For each service name provided by the user (e.g., `service-a`, `service-b`), you must perform the following steps:
+
+- **Create Directories:**
+  - `mkdir services/{service_name}`
+  - `mkdir services/{service_name}/app`
+
+- **Create `pyproject.toml` for the service** in `services/{service_name}/pyproject.toml`. This file defines the service and its dependencies, including the crucial local path dependency on the `shared` package.
+  ```toml
+  [tool.poetry]
+  name = "{service_name}"
+  version = "0.1.0"
+  description = "The {service_name}."
+  authors = ["Your Name <you@example.com>"]
+  packages = [{include = "app"}]
+
+  [tool.poetry.dependencies]
+  python = "^3.10"
+  fastapi = "^0.110.0"
+  uvicorn = {extras = ["standard"], version = "^0.29.0"}
+  shared = {path = "../../shared", develop = true}
+
+  [build-system]
+  requires = ["poetry-core"]
+  build-backend = "poetry.core.masonry.api"
+  ```
+
+- **Create a basic FastAPI app** in `services/{service_name}/app/main.py`. This example shows how to import and use the shared logger.
+  ```python
+  """Main application file for the {service_name}."""
+  from fastapi import FastAPI
+  from shared import get_logger
+
+  service_logger = get_logger("{service_name}")
+  app = FastAPI()
+
+  @app.get("/")
+  def read_root():
+      """Root endpoint."""
+      service_logger.info("Root endpoint was called.")
+      return {"message": "Hello from {service_name}"}
+
+  @app.get("/health")
+  def health_check():
+      """Health check endpoint."""
+      service_logger.info("Health check was successful.")
+      return {"status": "ok"}
+  ```
+
+- **Create a `dockerfile` for the service** in `services/{service_name}/dockerfile`. This file must be structured correctly to handle the local dependency.
+  ```dockerfile
+  # Base image
+  FROM python:3.10-slim
+
+  # Set environment variables
+  ENV PYTHONDONTWRITEBYTECODE 1
+  ENV PYTHONUNBUFFERED 1
+
+  # Install Poetry
+  RUN pip install --upgrade pip && pip install poetry
+
+  # Set work directory
+  WORKDIR /app
+
+  # Copy dependency definitions
+  COPY ./services/{service_name}/pyproject.toml ./services/{service_name}/poetry.lock* /app/
+
+  # CRITICAL: Copy the shared code BEFORE installing dependencies
+  COPY ./shared /shared/
+
+  # Install dependencies without installing the project root itself
+  RUN poetry config virtualenvs.create false \
+      && poetry install --no-interaction --no-ansi --no-root
+
+  # Copy the service's application code
+  COPY ./services/{service_name}/app /app/app
+
+  # Expose port (you will need to assign unique ports in docker-compose.yml)
+  EXPOSE 8000
+
+  # Run server
+  CMD ["poetry", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+  ```
+
+**4. Create Top-Level Docker Compose File**
+
+- Create a `docker-compose.yml` file in the project root. This file orchestrates all the services. You must dynamically generate a service definition for each service the user requests, assigning a unique port starting from 8001.
+- The `docker-compose.yml` content should look like this (dynamically add a block for each service):
+  ```yaml
+  services:
+    # --- Dynamically generate service definitions below ---
+    # service-a:
+    #   build:
+    #     context: .
+    #     dockerfile: ./services/service-a/dockerfile
+    #   container_name: service-a
+    #   command: poetry run uvicorn app.main:app --host 0.0.0.0 --port 8001 --reload
+    #   ports:
+    #     - "8001:8001"
+    #   volumes:
+    #     - ./services/service-a/app:/app/app
+    #     - ./shared:/shared # <-- CRITICAL for live reload of shared code
+  ```
+
+**5. Configure VS Code for Local Development**
+
+- Create the directory: `mkdir .vscode`
+- Create a `settings.json` file in `.vscode/settings.json`. This tells the Python linter where to find the modules, fixing "unresolved import" errors. Dynamically generate the list of paths.
+  ```json
+  {
+      "python.analysis.extraPaths": [
+          "./shared"
+          // Add paths for each service's app directory here, e.g.:
+          // "./services/service-a",
+          // "./services/service-b"
+      ]
+  }
+  ```
+
+**6. Finalize and Instruct**
+
+- After creating all files, run `poetry lock` inside each service directory (`services/{service_name}`) to generate the `poetry.lock` files.
+- Conclude by telling the user that the setup is complete and how to start the project: `docker-compose up --build`. ---
+description:
+globs:
+alwaysApply: false
+---

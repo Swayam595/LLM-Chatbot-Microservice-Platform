@@ -3,7 +3,6 @@ name = "llm-chatbot-services"
 version = "0.1.0"
 description = "LLM-powered chatbot microservice platform"
 authors = ["Swayam Swarooop Mishra <swayam.swaroop175@gmail.com>"]
-packages = [{ include = "app" }]
 
 [tool.poetry.dependencies]
 python = "^3.9"
