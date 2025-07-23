@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "conversaation-service"
+name = "conversation-service"
 version = "0.1.0"
 description = "Manages storage and retrieval of user conversation history, context memory, and vector embeddings."
 authors = ["Swayam Swarooop Mishra <swayam.swaroop175@gmail.com>"]
