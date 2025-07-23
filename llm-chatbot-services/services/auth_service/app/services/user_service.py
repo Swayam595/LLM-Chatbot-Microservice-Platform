@@ -1,4 +1,5 @@
 """Service for user-related business logic"""
+from datetime import datetime, timedelta, timezone
 from config import AppConfig
 from fastapi import HTTPException
 from app.services.jwt_utils import JWTUtils
@@ -22,13 +23,14 @@ class UserService:
             raise HTTPException(status_code=400, detail="Email already registered")
         
         hashed_pw = self.password_service.hash_password(user.password)
-        user_data = User(
+        new_user = User(
             username=user.username,
             email=user.email,
-            hashed_password=hashed_pw
+            hashed_password=hashed_pw,
+            role=user.role,
         )
 
-        await self.user_repository.add_user(user_data)
+        await self.user_repository.add_user(new_user)
 
         return {"message": "User registered successfully"}
 
@@ -42,5 +44,10 @@ class UserService:
         if not self.password_service.verify(credentials.password, user.hashed_password):
             raise HTTPException(status_code=401, detail="Invalid credentials")
 
-        token = self.jwt_utils.create_access_token({"sub": user.email})
-        return {"access_token": token, "token_type": "bearer"}
+        access_token_expire_minutes = self.app_config.ACCESS_TOKEN_EXPIRE_MINUTES
+        expiry_time = datetime.now(timezone.utc) + timedelta(minutes=access_token_expire_minutes)
+
+        token_payload = {"sub": user.email, "role": user.role, "exp": expiry_time}
+        token = self.jwt_utils.create_access_token(token_payload)
+        
+        return {"access_token": token, "token_type": "bearer", "expiry_time_in_seconds": access_token_expire_minutes * 60}

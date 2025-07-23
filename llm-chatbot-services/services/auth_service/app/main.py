@@ -4,10 +4,11 @@ from fastapi import FastAPI, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from shared import get_logger
 from config import AppConfig
-from app.schemas import UserCreate, UserLogin
+from app.schemas import UserCreate, UserLogin, TokenData
 from app.repositories.user_repository import UserRepository
 from app.services.user_service import UserService
 from app.services.database import get_db, init_db, shutdown_db
+from app.dependencies import get_current_user, require_role
 
 app_config = AppConfig()
 logger = get_logger(service_name="auth_service")
@@ -56,3 +57,16 @@ async def login(credentials: UserLogin,
     user_service = UserService(user_repository, app_config)
     return await user_service.login_user(credentials)
 
+@app.get("/me")
+async def read_current_user(
+    current_user: TokenData = Depends(get_current_user),
+):
+    """Protected endpoint"""
+    logger.info(f"Reading current user: {current_user.email}")
+    return {"message": "Registered user", "user": current_user}
+
+@app.get("/admin-only")
+async def admin_dashboard(current_user=Depends(require_role("admin"))):
+    """Admin dashboard"""
+    logger.info(f"Admin accessed by {current_user.email}")
+    return {"message": f"Welcome, admin {current_user.email}"}

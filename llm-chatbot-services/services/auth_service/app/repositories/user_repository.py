@@ -20,3 +20,9 @@ class UserRepository:
         self.__db.add(user)
         await self.__db.commit()
         await self.__db.refresh(user)
+
+    async def update_user(self, user: User) -> None:
+        """Update a user's role"""
+        self.__db.add(user)
+        await self.__db.commit()
+        await self.__db.refresh(user)
