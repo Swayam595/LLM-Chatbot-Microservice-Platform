@@ -4,6 +4,8 @@ from fastapi import FastAPI, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from shared import get_logger
 from config import AppConfig
+
+from app.services.refresh_token_service import RefreshTokenService
 from app.schemas import UserCreate, UserLogin, TokenData
 from app.repositories.user_repository import UserRepository
 from app.services.user_service import UserService
@@ -65,8 +67,8 @@ async def refresh_access_token(
     """Refresh an access token using a valid refresh token."""
     logger.info(f"Refreshing access token for user: {current_user.email}")
     user_repository = UserRepository(db)
-    user_service = UserService(user_repository, app_config)
-    return await user_service.refresh_access_token(current_user)
+    refresh_token_service = RefreshTokenService(app_config, user_repository)
+    return await refresh_token_service.get_new_tokens(current_user)
 
 @app.get("/me")
 async def read_current_user(
