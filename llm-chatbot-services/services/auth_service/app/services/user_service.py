@@ -1,10 +1,9 @@
 """Service for user-related business logic"""
-from datetime import datetime, timedelta, timezone
 from config import AppConfig
 from fastapi import HTTPException
 from app.services.jwt_utils import JWTUtils
 from app.repositories.user_repository import UserRepository
-from app.schemas import UserCreate, UserLogin
+from app.schemas import UserCreate, UserLogin, TokenData
 from app.models import User
 from app.services.password import PasswordService
 
@@ -43,11 +42,27 @@ class UserService:
 
         if not self.password_service.verify(credentials.password, user.hashed_password):
             raise HTTPException(status_code=401, detail="Invalid credentials")
+       
+        return await self.__generate_tokens(user)
 
-        access_token_expire_minutes = self.app_config.ACCESS_TOKEN_EXPIRE_MINUTES
-        expiry_time = datetime.now(timezone.utc) + timedelta(minutes=access_token_expire_minutes)
-
-        token_payload = {"sub": user.email, "role": user.role, "exp": expiry_time}
-        token = self.jwt_utils.create_access_token(token_payload)
+    async def refresh_access_token(self, current_user: TokenData):
+        """Refresh the access token for a user"""
+        user = await self.user_repository.get_user_by_email(current_user.email)
+        if not user:
+            raise HTTPException(status_code=401, detail="Invalid credentials")
         
-        return {"access_token": token, "token_type": "bearer", "expiry_time_in_seconds": access_token_expire_minutes * 60}
+        return await self.__generate_tokens(user)   
+
+    async def __generate_tokens(self, user: User):
+        """Generate tokens for a user"""
+        token_payload = {"sub": user.email, "role": user.role}
+        access_token = self.jwt_utils.create_access_token(data=token_payload)
+        refresh_token = self.jwt_utils.create_refresh_token(data=token_payload)
+
+        return {
+            "access_token": access_token,
+            "refresh_token": refresh_token,
+            "token_type": "bearer",
+            "access_token_expiry_time_in_seconds": self.app_config.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
+            "refresh_token_expiry_time_in_seconds": self.app_config.REFRESH_TOKEN_EXPIRE_MINUTES * 60,
+        }

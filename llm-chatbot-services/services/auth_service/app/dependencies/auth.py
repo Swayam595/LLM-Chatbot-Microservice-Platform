@@ -11,7 +11,7 @@ logger = get_logger(service_name="auth_service")
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login")
 
-def verify_token(token: str) -> TokenData:
+def verify_token(token: str, token_type: str) -> TokenData:
     """Verify the token"""
     app_config = AppConfig()
     try:
@@ -34,7 +34,7 @@ def verify_token(token: str) -> TokenData:
         logger.error(f"JWT decoding failed: {str(e)}")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Could not validate token",
+            detail=f"Could not validate {token_type} token",
             headers={"WWW-Authenticate": "Bearer"},
         ) from e
 
@@ -42,4 +42,10 @@ async def get_current_user(
     token: Annotated[str, Depends(oauth2_scheme)],
 ) -> TokenData:
     """Get the current user"""
-    return verify_token(token)
+    return verify_token(token, token_type="access")
+
+async def validate_refresh_tokens(
+    token: Annotated[str, Depends(oauth2_scheme)],
+) -> TokenData:
+    """Get the refreshed tokens"""
+    return verify_token(token, token_type="refresh")

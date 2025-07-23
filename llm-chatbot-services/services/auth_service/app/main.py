@@ -8,7 +8,7 @@ from app.schemas import UserCreate, UserLogin, TokenData
 from app.repositories.user_repository import UserRepository
 from app.services.user_service import UserService
 from app.services.database import get_db, init_db, shutdown_db
-from app.dependencies import get_current_user, require_role
+from app.dependencies import get_current_user, require_role, validate_refresh_tokens
 
 app_config = AppConfig()
 logger = get_logger(service_name="auth_service")
@@ -56,6 +56,17 @@ async def login(credentials: UserLogin,
     user_repository = UserRepository(db)
     user_service = UserService(user_repository, app_config)
     return await user_service.login_user(credentials)
+
+@app.post("/refresh")
+async def refresh_access_token(
+    current_user: TokenData = Depends(validate_refresh_tokens), 
+    db: AsyncSession = Depends(get_db),
+):
+    """Refresh an access token using a valid refresh token."""
+    logger.info(f"Refreshing access token for user: {current_user.email}")
+    user_repository = UserRepository(db)
+    user_service = UserService(user_repository, app_config)
+    return await user_service.refresh_access_token(current_user)
 
 @app.get("/me")
 async def read_current_user(
