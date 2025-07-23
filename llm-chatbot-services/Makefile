@@ -68,3 +68,6 @@ restart-conversation-service:
 
 open-auth-db:
 	docker exec -it postgres psql -U user -d auth_db
+
+remove-postgres-data:
+	docker volume rm llm-chatbot-services_postgres_data
