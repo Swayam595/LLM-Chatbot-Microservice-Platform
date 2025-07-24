@@ -7,15 +7,33 @@ from jose import JWTError, jwt
 from config import AppConfig
 from app.schemas import TokenData
 from shared import get_logger
+from app.dependencies.dependency_factory import get_app_config
 
 logger = get_logger(service_name="auth_service")
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login")
 
 
-def verify_token(token: str, required_token_type: str) -> TokenData:
+async def get_current_user(
+    token: Annotated[str, Depends(oauth2_scheme)],
+    app_config: AppConfig = Depends(get_app_config),
+) -> TokenData:
+    """Get the current user"""
+    return _verify_token(token, required_token_type="access", app_config=app_config)
+
+
+async def validate_refresh_tokens(
+    token: Annotated[str, Depends(oauth2_scheme)],
+    app_config: AppConfig = Depends(get_app_config),
+) -> TokenData:
+    """Get the refreshed tokens"""
+    return _verify_token(token, required_token_type="refresh", app_config=app_config)
+
+
+def _verify_token(
+    token: str, required_token_type: str, app_config: AppConfig
+) -> TokenData:
     """Verify the token"""
-    app_config = AppConfig()
     try:
         payload = jwt.decode(
             token, app_config.SECRET_KEY, algorithms=[app_config.ALGORITHM]
@@ -47,17 +65,3 @@ def verify_token(token: str, required_token_type: str) -> TokenData:
             detail=f"Could not validate {required_token_type} token",
             headers={"WWW-Authenticate": "Bearer"},
         ) from e
-
-
-async def get_current_user(
-    token: Annotated[str, Depends(oauth2_scheme)],
-) -> TokenData:
-    """Get the current user"""
-    return verify_token(token, required_token_type="access")
-
-
-async def validate_refresh_tokens(
-    token: Annotated[str, Depends(oauth2_scheme)],
-) -> TokenData:
-    """Get the refreshed tokens"""
-    return verify_token(token, required_token_type="refresh")

@@ -12,8 +12,12 @@ from app.repositories.user_repository import UserRepository
 from app.services.user_service import UserService
 from app.services.database import get_db, init_db, shutdown_db
 from app.dependencies import get_current_user, require_role, validate_refresh_tokens
+from app.dependencies.dependency_factory import (
+    get_app_config,
+    get_user_service,
+    get_user_repository,
+)
 
-app_config = AppConfig()
 logger = get_logger(service_name="auth_service")
 
 
@@ -47,35 +51,31 @@ def health_check():
 @app.post("/register")
 async def register(
     user: UserCreate,
-    db: AsyncSession = Depends(get_db),
+    user_service: UserService = Depends(get_user_service),
 ):
     """Register endpoint"""
     logger.info(f"Registering user: {user.email}")
-    user_repository = UserRepository(db)
-    user_service = UserService(user_repository, app_config)
     return await user_service.register_user(user)
 
 
 @app.post("/login")
 async def login(
     credentials: UserLogin,
-    db: AsyncSession = Depends(get_db),
+    user_service: UserService = Depends(get_user_service),
 ):
     """Login Endpoint"""
     logger.info(f"User login attempt: {credentials.email}")
-    user_repository = UserRepository(db)
-    user_service = UserService(user_repository, app_config)
     return await user_service.login_user(credentials)
 
 
 @app.post("/refresh")
 async def refresh_access_token(
     current_user: TokenData = Depends(validate_refresh_tokens),
-    db: AsyncSession = Depends(get_db),
+    user_repository: UserRepository = Depends(get_user_repository),
+    app_config: AppConfig = Depends(get_app_config),
 ):
     """Refresh an access token using a valid refresh token."""
     logger.info(f"Refreshing access token for user: {current_user.email}")
-    user_repository = UserRepository(db)
     refresh_token_service = RefreshTokenService(app_config, user_repository)
     return await refresh_token_service.get_new_tokens(current_user)
 
