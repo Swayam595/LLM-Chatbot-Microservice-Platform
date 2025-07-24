@@ -4,6 +4,7 @@ from typing import Dict
 from datetime import datetime, timedelta, timezone
 from jose import jwt
 from config import AppConfig
+from shared.logger import get_logger
 
 
 class JWTUtils:
@@ -15,14 +16,17 @@ class JWTUtils:
         self.algorithm = app_config.ALGORITHM
         self.access_token_expire_minutes = app_config.ACCESS_TOKEN_EXPIRE_MINUTES
         self.refresh_token_expire_minutes = app_config.REFRESH_TOKEN_EXPIRE_MINUTES
+        self.__logger = get_logger(service_name="auth_service")
 
     def create_access_token(self, data: Dict) -> str:
         """Create a short-lived access token."""
+        self.__logger.debug("Creating access token for user")
         expires_delta = timedelta(minutes=self.access_token_expire_minutes)
         return self._create_token(data, expires_delta, token_type="access")
 
     def create_refresh_token(self, data: Dict) -> str:
         """Create a long-lived refresh token."""
+        self.__logger.debug("Creating refresh token for user")
         expires_delta = timedelta(minutes=self.refresh_token_expire_minutes)
         return self._create_token(data, expires_delta, token_type="refresh")
 

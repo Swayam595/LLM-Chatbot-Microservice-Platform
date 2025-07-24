@@ -7,6 +7,7 @@ from app.repositories.user_repository import UserRepository
 from app.schemas import UserCreate, UserLogin
 from app.models import User
 from app.services.password import PasswordService
+from shared.logger import get_logger
 
 
 class UserService:
@@ -18,6 +19,7 @@ class UserService:
         self.password_service = PasswordService()
         self.app_config = app_config
         self.token_generator = TokenGenerator(app_config)
+        self.__logger = get_logger(service_name="auth_service")
 
     async def register_user(self, user: UserCreate):
         """Register a new user"""
@@ -33,7 +35,7 @@ class UserService:
         )
 
         await self.user_repository.add_user(new_user)
-
+        self.__logger.info(f"User registered: {user.email}")
         return {"message": "User registered successfully"}
 
     async def login_user(self, credentials: UserLogin):
@@ -45,5 +47,6 @@ class UserService:
 
         if not self.password_service.verify(credentials.password, user.hashed_password):
             raise HTTPException(status_code=401, detail="Invalid credentials")
-
+        self.__logger.info(f"User found: {user.email}")
+        self.__logger.info("Generating new tokens for user")
         return await self.token_generator.get_new_tokens(user)
