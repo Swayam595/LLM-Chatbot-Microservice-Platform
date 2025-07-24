@@ -62,7 +62,7 @@ class RefreshTokenRepository:
         return result.scalar_one_or_none() is not None
 
     # TODO: Delete expired tokens for all users in a cron job
-    async def __delete_user_expired_tokens(self, user_id: int):
+    async def delete_user_expired_tokens(self, user_id: int):
         """Delete 30 days old expired refresh tokens"""
         self.logger.info("Deleting expired refresh token")
         result = await self.db.execute(
