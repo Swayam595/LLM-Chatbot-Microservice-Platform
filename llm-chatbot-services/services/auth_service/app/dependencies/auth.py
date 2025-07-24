@@ -1,4 +1,5 @@
 """Module for the auth dependencies"""
+
 from typing import Annotated
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
@@ -11,17 +12,16 @@ logger = get_logger(service_name="auth_service")
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login")
 
+
 def verify_token(token: str, required_token_type: str) -> TokenData:
     """Verify the token"""
     app_config = AppConfig()
     try:
         payload = jwt.decode(
-            token,
-            app_config.SECRET_KEY,
-            algorithms=[app_config.ALGORITHM]
+            token, app_config.SECRET_KEY, algorithms=[app_config.ALGORITHM]
         )
         email = payload.get("sub")
-        role = payload.get("role")  
+        role = payload.get("role")
         token_type = payload.get("type")
 
         if email is None or role is None or token_type is None:
@@ -48,11 +48,13 @@ def verify_token(token: str, required_token_type: str) -> TokenData:
             headers={"WWW-Authenticate": "Bearer"},
         ) from e
 
+
 async def get_current_user(
     token: Annotated[str, Depends(oauth2_scheme)],
 ) -> TokenData:
     """Get the current user"""
     return verify_token(token, required_token_type="access")
+
 
 async def validate_refresh_tokens(
     token: Annotated[str, Depends(oauth2_scheme)],

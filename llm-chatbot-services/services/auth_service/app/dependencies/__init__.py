@@ -1,4 +1,5 @@
 """Module for the auth dependencies"""
+
 from .auth import get_current_user, validate_refresh_tokens
 from .roles import require_role
 

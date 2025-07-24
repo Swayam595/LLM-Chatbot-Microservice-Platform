@@ -1,4 +1,5 @@
 """A simple configurable logger using loguru."""
+
 import os
 import sys
 from loguru import logger
@@ -31,4 +32,6 @@ def get_logger(service_name: str):
     """
     Returns a logger instance patched to include the service_name in every record.
     """
-    return logger.patch(lambda record: record["extra"].update(service_name=service_name))
+    return logger.patch(
+        lambda record: record["extra"].update(service_name=service_name)
+    )

@@ -1,10 +1,13 @@
 """Repository for user data access"""
+
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from app.models import User
 
+
 class UserRepository:
     """Repository for user data access"""
+
     def __init__(self, db: AsyncSession):
         """Initialize the user repository"""
         # Simulate a user database

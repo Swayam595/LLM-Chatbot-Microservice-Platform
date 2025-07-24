@@ -1,4 +1,5 @@
 """Service for user-related business logic"""
+
 from config import AppConfig
 from fastapi import HTTPException
 from app.services.token_generator import TokenGenerator
@@ -7,8 +8,10 @@ from app.schemas import UserCreate, UserLogin
 from app.models import User
 from app.services.password import PasswordService
 
+
 class UserService:
     """Service for user-related business logic"""
+
     def __init__(self, user_repository: UserRepository, app_config: AppConfig):
         """Initialize the user service"""
         self.user_repository = user_repository
@@ -20,7 +23,7 @@ class UserService:
         """Register a new user"""
         if await self.user_repository.get_user_by_email(user.email):
             raise HTTPException(status_code=400, detail="Email already registered")
-        
+
         hashed_pw = self.password_service.hash_password(user.password)
         new_user = User(
             username=user.username,
@@ -42,5 +45,5 @@ class UserService:
 
         if not self.password_service.verify(credentials.password, user.hashed_password):
             raise HTTPException(status_code=401, detail="Invalid credentials")
-       
+
         return await self.token_generator.get_new_tokens(user)
