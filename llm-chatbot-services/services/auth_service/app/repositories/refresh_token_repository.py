@@ -1,4 +1,5 @@
 """Repository for refresh token data access"""
+from datetime import datetime, timedelta
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from fastapi import HTTPException
@@ -17,10 +18,16 @@ class RefreshTokenRepository:
 
     async def save(self, token: str, user_id: int):
         """Save a new refresh token"""
-        self.logger.info("Saving new refresh token")
-        new_token = RefreshTokens(token=token, user_id=user_id)
-        self.db.add(new_token)
+        self.logger.info("Saving (or updating) refresh token")
+        existing_token = await self.__get_existing_refresh_token_if_exists(user_id)
+
+        if existing_token:
+            self.__update_existing_token(existing_token, token)
+        else:
+            self.__create_new_token(token, user_id)
+
         await self.db.commit()
+        self.logger.info("Refresh token saved/updated successfully")
 
     async def invalidate(self, token: str):
         """Invalidate a refresh token"""
@@ -53,3 +60,40 @@ class RefreshTokenRepository:
             )
         )
         return result.scalar_one_or_none() is not None
+
+    # TODO: Delete expired tokens for all users in a cron job
+    async def __delete_user_expired_tokens(self, user_id: int):
+        """Delete 30 days old expired refresh tokens"""
+        self.logger.info("Deleting expired refresh token")
+        result = await self.db.execute(
+            select(RefreshTokens).where(
+                RefreshTokens.user_id == user_id,
+                RefreshTokens.is_valid is False,
+                RefreshTokens.created_at < datetime.now() - timedelta(days=30),
+            )
+        )
+        db_token = result.scalars().all()
+        if db_token:
+            await self.db.delete(db_token)
+            await self.db.commit()
+            self.logger.info("Expired refresh token deleted successfully")
+
+    async def __get_existing_refresh_token_if_exists(self, user_id: int) -> bool:
+        """Get an existing refresh token if it exists"""
+        self.logger.info("Getting refresh token if it exists")
+        result = await self.db.execute(
+            select(RefreshTokens).where(RefreshTokens.user_id == user_id)
+        )
+        return result.scalar_one_or_none()
+
+    def __update_existing_token(self, existing_token: RefreshTokens, token: str):
+        """Update an existing refresh token"""
+        self.logger.info("Updating existing refresh token")
+        existing_token.token = token
+        existing_token.is_valid = True
+
+    def __create_new_token(self, token: str, user_id: int):
+        """Create a new refresh token"""
+        self.logger.info("Creating a new refresh token")
+        new_token = RefreshTokens(token=token, user_id=user_id)
+        self.db.add(new_token)
