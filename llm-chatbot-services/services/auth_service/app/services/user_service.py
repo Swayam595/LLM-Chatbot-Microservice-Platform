@@ -4,6 +4,7 @@ from config import AppConfig
 from fastapi import HTTPException
 from app.services.token_generator import TokenGenerator
 from app.repositories.user_repository import UserRepository
+from app.repositories.refresh_token_repository import RefreshTokenRepository
 from app.schemas import UserCreate, UserLogin
 from app.models import User
 from app.services.password import PasswordService
@@ -13,12 +14,18 @@ from shared.logger import get_logger
 class UserService:
     """Service for user-related business logic"""
 
-    def __init__(self, user_repository: UserRepository, app_config: AppConfig):
+    def __init__(
+        self,
+        user_repository: UserRepository,
+        app_config: AppConfig,
+        refresh_token_repository: RefreshTokenRepository,
+    ):
         """Initialize the user service"""
         self.user_repository = user_repository
         self.password_service = PasswordService()
         self.app_config = app_config
         self.token_generator = TokenGenerator(app_config)
+        self.refresh_token_repository = refresh_token_repository
         self.__logger = get_logger(service_name="auth_service")
 
     async def register_user(self, user: UserCreate):
@@ -48,5 +55,10 @@ class UserService:
         if not self.password_service.verify(credentials.password, user.hashed_password):
             raise HTTPException(status_code=401, detail="Invalid credentials")
         self.__logger.info(f"User found: {user.email}")
-        self.__logger.info("Generating new tokens for user")
-        return await self.token_generator.get_new_tokens(user)
+        self.__logger.info(f"Generating new tokens for user: {user.email}")
+        token_payload = await self.token_generator.get_new_tokens(user)
+        await self.refresh_token_repository.save(
+            token_payload["refresh_token"], user.id
+        )
+
+        return token_payload

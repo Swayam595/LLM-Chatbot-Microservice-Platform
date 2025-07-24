@@ -6,11 +6,22 @@ from shared import get_logger
 from config import AppConfig
 
 from app.services.refresh_token_service import RefreshTokenService
-from app.schemas import UserCreate, UserLogin, TokenData
+from app.schemas import (
+    UserCreate,
+    UserLogin,
+    TokenData,
+    ValidatedToken,
+)
 from app.repositories.user_repository import UserRepository
+from app.repositories.refresh_token_repository import RefreshTokenRepository
 from app.services.user_service import UserService
 from app.services.database import init_db, shutdown_db
-from app.dependencies import get_current_user, require_role, validate_refresh_tokens
+from app.dependencies import (
+    get_current_user,
+    require_role,
+    validate_refresh_token,
+    get_refresh_token_repository,
+)
 from app.dependencies.dependency_factory import (
     get_app_config,
     get_user_service,
@@ -49,8 +60,7 @@ def health_check():
 
 @app.post("/register")
 async def register(
-    user: UserCreate,
-    user_service: UserService = Depends(get_user_service),
+    user: UserCreate, user_service: UserService = Depends(get_user_service),
 ):
     """Register endpoint"""
     logger.info(f"Registering user: {user.email}")
@@ -59,30 +69,45 @@ async def register(
 
 @app.post("/login")
 async def login(
-    credentials: UserLogin,
-    user_service: UserService = Depends(get_user_service),
+    credentials: UserLogin, user_service: UserService = Depends(get_user_service),
 ):
     """Login Endpoint"""
     logger.info(f"User login attempt: {credentials.email}")
     return await user_service.login_user(credentials)
 
 
+@app.post("/logout")
+async def logout(
+    validated_token: ValidatedToken = Depends(validate_refresh_token),
+    refresh_token_repository: RefreshTokenRepository = Depends(
+        get_refresh_token_repository
+    ),
+):
+    """Logout endpoint"""
+    logger.info(f"Logging out user: {validated_token.email}")
+    await refresh_token_repository.invalidate(validated_token.token)
+    return {"message": f"{validated_token.email} logged out successfully"}
+
+
 @app.post("/refresh")
 async def refresh_access_token(
-    current_user: TokenData = Depends(validate_refresh_tokens),
+    current_user: TokenData = Depends(validate_refresh_token),
     user_repository: UserRepository = Depends(get_user_repository),
     app_config: AppConfig = Depends(get_app_config),
+    refresh_token_repository: RefreshTokenRepository = Depends(
+        get_refresh_token_repository
+    ),
 ):
     """Refresh an access token using a valid refresh token."""
     logger.info(f"Refreshing access token for user: {current_user.email}")
-    refresh_token_service = RefreshTokenService(app_config, user_repository)
+    refresh_token_service = RefreshTokenService(
+        app_config, user_repository, refresh_token_repository
+    )
     return await refresh_token_service.get_new_tokens(current_user)
 
 
 @app.get("/me")
-async def read_current_user(
-    current_user: TokenData = Depends(get_current_user),
-):
+async def read_current_user(current_user: TokenData = Depends(get_current_user),):
     """Protected endpoint"""
     logger.info(f"Reading current user: {current_user.email}")
     return {"message": "Registered user", "user": current_user}
@@ -91,5 +116,5 @@ async def read_current_user(
 @app.get("/admin-only")
 async def admin_dashboard(current_user=Depends(require_role("admin"))):
     """Admin dashboard"""
-    logger.info(f"Admin accessed by {current_user.email}")
+    logger.info(f"Admin dashboard accessed by {current_user.email}")
     return {"message": f"Welcome, admin {current_user.email}"}

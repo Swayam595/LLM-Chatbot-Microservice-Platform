@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.services.database.config import DatabaseConfig
 from app.services.database import DatabaseEngine
 from app.services.database import SessionProvider
-from app.models import UserBase
+from app.models.base import Base
 
 _config = DatabaseConfig()
 _engine = DatabaseEngine(_config)
@@ -21,7 +21,7 @@ async def get_db() -> AsyncGenerator[AsyncSession, None]:
 async def init_db():
     """Create all tables."""
     async with _engine.engine.begin() as conn:
-        await conn.run_sync(UserBase.metadata.create_all)
+        await conn.run_sync(Base.metadata.create_all)
 
 
 async def shutdown_db():

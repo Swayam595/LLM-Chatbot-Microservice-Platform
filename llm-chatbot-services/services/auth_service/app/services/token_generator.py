@@ -15,7 +15,6 @@ class TokenGenerator:
 
     async def get_new_tokens(self, user: User):
         """Generate new tokens for a user"""
-        self.__logger.info(f"Generating new tokens for user: {user.email}")
         token_payload = {"sub": user.email, "role": user.role}
         access_token_expiry_time_in_seconds = (
             self.app_config.ACCESS_TOKEN_EXPIRE_MINUTES * 60

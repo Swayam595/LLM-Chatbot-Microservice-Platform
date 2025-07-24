@@ -1,3 +1,4 @@
-from .users import User, UserBase
+from .users import User
+from .refresh_tokens import RefreshTokens
 
-__all__ = ["User", "UserBase"]
+__all__ = ["User", "RefreshTokens"]

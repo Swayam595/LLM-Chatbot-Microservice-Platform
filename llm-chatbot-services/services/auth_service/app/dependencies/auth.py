@@ -5,9 +5,13 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from config import AppConfig
-from app.schemas import TokenData
+from app.schemas import TokenData, ValidatedToken
 from shared import get_logger
-from app.dependencies.dependency_factory import get_app_config
+from app.dependencies.dependency_factory import (
+    get_app_config,
+    get_refresh_token_repository,
+)
+from app.repositories.refresh_token_repository import RefreshTokenRepository
 
 logger = get_logger(service_name="auth_service")
 
@@ -19,15 +23,24 @@ async def get_current_user(
     app_config: AppConfig = Depends(get_app_config),
 ) -> TokenData:
     """Get the current user"""
+    logger.info("Getting current user by validating access token")
     return _verify_token(token, required_token_type="access", app_config=app_config)
 
 
-async def validate_refresh_tokens(
+async def validate_refresh_token(
     token: Annotated[str, Depends(oauth2_scheme)],
     app_config: AppConfig = Depends(get_app_config),
-) -> TokenData:
+    refresh_token_repository: RefreshTokenRepository = Depends(
+        get_refresh_token_repository
+    ),
+) -> ValidatedToken:
     """Get the refreshed tokens"""
-    return _verify_token(token, required_token_type="refresh", app_config=app_config)
+    logger.info("Validating refresh token")
+    await refresh_token_repository.assert_valid_token_in_db(token)
+    token_data = _verify_token(
+        token, required_token_type="refresh", app_config=app_config
+    )
+    return ValidatedToken(token=token, email=token_data.email, role=token_data.role,)
 
 
 def _verify_token(
@@ -55,7 +68,7 @@ def _verify_token(
                 detail="Invalid token type",
                 headers={"WWW-Authenticate": "Bearer"},
             )
-
+        logger.info(f"{required_token_type} token verified successfully")
         return TokenData(email=email, role=role)
 
     except JWTError as e:

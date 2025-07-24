@@ -1,12 +1,12 @@
 """Module for the user model"""
 
 from sqlalchemy import Column, Integer, String
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import relationship
 
-UserBase = declarative_base()
+from app.models.base import Base
 
 
-class User(UserBase):
+class User(Base):
     """User model"""
 
     __tablename__ = "users"
@@ -16,3 +16,4 @@ class User(UserBase):
     email = Column(String, unique=True, nullable=False, index=True)
     hashed_password = Column(String, nullable=False)
     role = Column(String, default="user", nullable=False)
+    refresh_tokens = relationship("RefreshTokens", back_populates="user")
