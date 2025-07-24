@@ -5,8 +5,8 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from config import AppConfig
-from app.schemas import TokenData, ValidatedToken
 from shared import get_logger
+from app.schemas import TokenData, ValidatedToken
 from app.dependencies.dependency_factory import (
     get_app_config,
     get_refresh_token_repository,
