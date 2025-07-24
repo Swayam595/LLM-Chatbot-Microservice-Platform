@@ -2,7 +2,6 @@
 
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, Depends
-from sqlalchemy.ext.asyncio import AsyncSession
 from shared import get_logger
 from config import AppConfig
 
@@ -10,7 +9,7 @@ from app.services.refresh_token_service import RefreshTokenService
 from app.schemas import UserCreate, UserLogin, TokenData
 from app.repositories.user_repository import UserRepository
 from app.services.user_service import UserService
-from app.services.database import get_db, init_db, shutdown_db
+from app.services.database import init_db, shutdown_db
 from app.dependencies import get_current_user, require_role, validate_refresh_tokens
 from app.dependencies.dependency_factory import (
     get_app_config,
