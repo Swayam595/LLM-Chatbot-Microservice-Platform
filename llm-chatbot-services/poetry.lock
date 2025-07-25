@@ -47,6 +47,7 @@ develop = true
 
 [package.dependencies]
 fastapi = "^0.110.0"
+shared = {path = "../../shared", develop = true}
 uvicorn = "^0.29.0"
 
 [package.source]
@@ -327,6 +328,7 @@ develop = true
 
 [package.dependencies]
 fastapi = "^0.110.0"
+shared = {path = "../../shared", develop = true}
 uvicorn = "^0.29.0"
 
 [package.source]
@@ -373,6 +375,7 @@ develop = true
 
 [package.dependencies]
 fastapi = "^0.110.0"
+shared = {path = "../../shared", develop = true}
 uvicorn = "^0.29.0"
 
 [package.source]
