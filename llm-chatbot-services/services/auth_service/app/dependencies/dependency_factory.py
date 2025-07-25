@@ -3,10 +3,10 @@
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from config import AppConfig
+from shared.database import get_db
 from app.repositories.user_repository import UserRepository
 from app.repositories.refresh_token_repository import RefreshTokenRepository
 from app.services.user_service import UserService
-from app.services.db import get_db
 from app.services.reset_password_service import ResetPasswordService
 
 _auth_service_app_config = AppConfig()
