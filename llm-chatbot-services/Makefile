@@ -66,8 +66,22 @@ restart-conversation-service:
 	docker-compose down conversation-service
 	make build-up-conversation-service
 
+build-up-postgres:
+	docker-compose build postgres
+	docker-compose up postgres
+
+restart-postgres:
+	docker-compose down postgres
+	make build-up-postgres
+
 open-auth-db:
 	docker exec -it postgres psql -U user -d auth_db
+
+open-convo-db:
+	docker exec -it postgres psql -U user -d convo_db
+
+remove-all:
+	docker-compose down --volumes --remove-orphans
 
 remove-postgres-data:
 	docker volume rm llm-chatbot-services_postgres_data

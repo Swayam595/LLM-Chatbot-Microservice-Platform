@@ -71,9 +71,8 @@ services:
     environment:
       - POSTGRES_USER=user
       - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=auth_db
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+          - ./services/postgres-init/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
 
   redis:
     image: redis:7
