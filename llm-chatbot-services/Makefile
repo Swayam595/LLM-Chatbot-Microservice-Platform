@@ -80,6 +80,9 @@ open-auth-db:
 open-convo-db:
 	docker exec -it postgres psql -U user -d convo_db
 
+open-redis-cli:
+	docker exec -it redis redis-cli
+
 remove-all:
 	docker-compose down --volumes --remove-orphans
 
