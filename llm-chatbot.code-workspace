@@ -1,0 +1,25 @@
+{
+	"folders": [
+		{
+			"name": "API Gateway",
+			"path": "llm-chatbot-services/services/api_gateway"
+		},
+		{
+			"name": "Auth Service",
+			"path": "llm-chatbot-services/services/auth_service"
+		},
+		{
+			"name": "Chatbot Service",
+			"path": "llm-chatbot-services/services/chatbot_service"
+		},
+		{
+			"name": "Conversation Service",
+			"path": "llm-chatbot-services/services/conversation_service"
+		},
+		{
+			"name": "Shared Library",
+			"path": "llm-chatbot-services/shared"
+		}
+	],
+	"settings": {}
+} 
