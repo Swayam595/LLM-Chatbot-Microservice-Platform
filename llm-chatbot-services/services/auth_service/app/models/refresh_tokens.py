@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Boolean
 from sqlalchemy.orm import relationship
 
-from app.models.base import Base
+from shared.base import Base
 
 
 class RefreshTokens(Base):

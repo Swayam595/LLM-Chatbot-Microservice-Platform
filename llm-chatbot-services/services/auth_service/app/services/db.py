@@ -2,10 +2,10 @@
 
 from typing import AsyncGenerator
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.services.database.config import DatabaseConfig
-from app.services.database import DatabaseEngine
-from app.services.database import SessionProvider
-from app.models.base import Base
+from shared.database.config import DatabaseConfig
+from shared.database.engine import DatabaseEngine
+from shared.database.session import SessionProvider
+from shared.base import Base
 
 _config = DatabaseConfig()
 _engine = DatabaseEngine(_config)

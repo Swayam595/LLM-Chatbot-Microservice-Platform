@@ -17,7 +17,7 @@ from app.schemas import (
 from app.repositories.user_repository import UserRepository
 from app.repositories.refresh_token_repository import RefreshTokenRepository
 from app.services.user_service import UserService
-from app.services.database import init_db, shutdown_db
+from app.services.db import init_db, shutdown_db
 from app.dependencies import (
     require_role,
     get_refresh_token_repository,
