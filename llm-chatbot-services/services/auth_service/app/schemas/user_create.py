@@ -8,6 +8,6 @@ class UserCreate(BaseModel):
     """Schema for creating a user"""
 
     username: str = Field(..., min_length=3, max_length=20)
-    email: EmailStr
+    email: EmailStr = Field(..., format="email")
     password: str = Field(..., min_length=6)
     role: Literal["admin", "user"] = "user"

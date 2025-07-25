@@ -7,8 +7,14 @@ from app.repositories.user_repository import UserRepository
 from app.repositories.refresh_token_repository import RefreshTokenRepository
 from app.services.user_service import UserService
 from app.services.database import get_db
+from app.services.reset_password_service import ResetPasswordService
 
 _auth_service_app_config = AppConfig()
+
+
+def get_app_config() -> AppConfig:
+    """Get the app config"""
+    return _auth_service_app_config
 
 
 def get_user_repository(db: AsyncSession = Depends(get_db),) -> UserRepository:
@@ -31,6 +37,9 @@ def get_user_service(
     return UserService(user_repo, _auth_service_app_config, refresh_token_repo)
 
 
-def get_app_config() -> AppConfig:
-    """Get the app config"""
-    return _auth_service_app_config
+def get_reset_password_service(
+    app_config: AppConfig = Depends(get_app_config),
+    user_repo: UserRepository = Depends(get_user_repository),
+) -> ResetPasswordService:
+    """Get the reset password service"""
+    return ResetPasswordService(app_config, user_repo)

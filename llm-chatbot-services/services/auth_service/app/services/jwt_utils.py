@@ -30,6 +30,12 @@ class JWTUtils:
         expires_delta = timedelta(minutes=self.refresh_token_expire_minutes)
         return self._create_token(data, expires_delta, token_type="refresh")
 
+    def create_reset_password_token(self, data: Dict) -> str:
+        """Create a forgot password token."""
+        self.__logger.debug("Creating forgot password token for user")
+        expires_delta = timedelta(minutes=30)
+        return self._create_token(data, expires_delta, token_type="forgot_password")
+
     def _create_token(
         self, data: Dict, expires_delta: timedelta, token_type: str
     ) -> str:

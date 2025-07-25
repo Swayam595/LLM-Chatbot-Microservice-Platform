@@ -11,22 +11,29 @@ from app.schemas import (
     UserLogin,
     TokenData,
     ValidatedToken,
+    ForgotPasswordRequest,
+    ResetPasswordRequest,
 )
 from app.repositories.user_repository import UserRepository
 from app.repositories.refresh_token_repository import RefreshTokenRepository
 from app.services.user_service import UserService
 from app.services.database import init_db, shutdown_db
 from app.dependencies import (
-    get_current_user,
     require_role,
-    validate_refresh_token,
     get_refresh_token_repository,
+)
+from app.dependencies.authentication import (
+    get_current_user,
+    validate_refresh_token,
+    validate_forgot_password_token,
 )
 from app.dependencies.dependency_factory import (
     get_app_config,
-    get_user_service,
     get_user_repository,
+    get_user_service,
+    get_reset_password_service,
 )
+from app.services.reset_password_service import ResetPasswordService
 
 logger = get_logger(service_name="auth_service")
 
@@ -104,6 +111,41 @@ async def refresh_access_token(
         app_config, user_repository, refresh_token_repository
     )
     return await refresh_token_service.get_new_tokens(current_user)
+
+
+@app.post("/forgot-password")
+async def forgot_password(
+    forgot_password_data: ForgotPasswordRequest,
+    reset_password_service: ResetPasswordService = Depends(get_reset_password_service),
+):
+    """Forgot password endpoint"""
+    logger.info(
+        f"Forgot password endpoint called for user: {forgot_password_data.email}"
+    )
+    return await reset_password_service.get_reset_password_token(forgot_password_data)
+
+
+@app.post("/reset-password")
+async def reset_password(
+    reset_password_data: ResetPasswordRequest,
+    app_config: AppConfig = Depends(get_app_config),
+    user_repository: UserRepository = Depends(get_user_repository),
+    refresh_token_repository: RefreshTokenRepository = Depends(
+        get_refresh_token_repository
+    ),
+    reset_password_service: ResetPasswordService = Depends(get_reset_password_service),
+):
+    """Reset password endpoint"""
+    logger.info("Reset password endpoint called")
+    token_data: TokenData = await validate_forgot_password_token(
+        reset_password_data.reset_password_token,
+        app_config,
+        user_repository,
+        refresh_token_repository,
+    )
+    return await reset_password_service.reset_password(
+        token_data.email, reset_password_data
+    )
 
 
 @app.get("/me")

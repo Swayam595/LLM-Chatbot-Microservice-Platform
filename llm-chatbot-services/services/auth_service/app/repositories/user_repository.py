@@ -26,6 +26,10 @@ class UserRepository:
 
     async def update_user(self, user: User) -> None:
         """Update a user's role"""
-        self.__db.add(user)
         await self.__db.commit()
         await self.__db.refresh(user)
+
+    async def update_user_password(self, user: User, new_hashed_password: str) -> None:
+        """Update a user's password"""
+        user.hashed_password = new_hashed_password
+        await self.update_user(user)

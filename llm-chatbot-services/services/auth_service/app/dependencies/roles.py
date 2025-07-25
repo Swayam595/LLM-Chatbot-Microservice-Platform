@@ -1,7 +1,7 @@
 """Module for the role dependencies"""
 
 from fastapi import Depends, HTTPException, status
-from app.dependencies.auth import get_current_user
+from app.dependencies.authentication import get_current_user
 from app.schemas import TokenData
 
 

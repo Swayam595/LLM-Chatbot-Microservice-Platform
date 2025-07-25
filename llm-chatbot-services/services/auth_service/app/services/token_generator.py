@@ -22,20 +22,8 @@ class TokenGenerator:
         refresh_token_expiry_time_in_seconds = (
             self.app_config.REFRESH_TOKEN_EXPIRE_MINUTES * 60
         )
-        access_token = self.jwt_utils.create_access_token(
-            data={
-                **token_payload,
-                "type": "access",
-                "exp": access_token_expiry_time_in_seconds,
-            }
-        )
-        refresh_token = self.jwt_utils.create_refresh_token(
-            data={
-                **token_payload,
-                "type": "refresh",
-                "exp": refresh_token_expiry_time_in_seconds,
-            }
-        )
+        access_token = self.jwt_utils.create_access_token(token_payload)
+        refresh_token = self.jwt_utils.create_refresh_token(token_payload)
 
         self.__logger.info(f"New Tokens generated for user: {user.email}")
 
