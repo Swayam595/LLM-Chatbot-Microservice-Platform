@@ -19,9 +19,9 @@ from app.repositories.user_repository import UserRepository
 from .assert_token_validity import (
     assert_token_payload_has_required_fields,
     assert_token_payload_is_required_token_type,
-    assert_token_payload_is_not_expired,
     assert_valid_user_exists,
 )
+from .invalidate_token import if_expired_invalidate_token
 
 logger = get_logger(service_name="auth_service")
 
@@ -100,9 +100,6 @@ async def _verify_token(
 
         assert_token_payload_has_required_fields(payload)
         assert_token_payload_is_required_token_type(payload, required_token_type)
-        await assert_token_payload_is_not_expired(
-            payload, required_token_type, token, refresh_token_repository
-        )
 
         email = payload.get("sub")
         role = payload.get("role")
@@ -111,11 +108,20 @@ async def _verify_token(
 
         logger.info(f"{required_token_type} token verified successfully")
         return TokenData(email=email, role=role)
-
     except JWTError as e:
         logger.error(f"JWT decoding failed: {str(e)}")
+        await if_expired_invalidate_token(
+            token, required_token_type, refresh_token_repository, e
+        )
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail=f"Could not validate {required_token_type} token: {str(e)}",
+            headers={"WWW-Authenticate": "Bearer"},
+        ) from e
+    except Exception as e:
+        logger.error(f"An error occurred: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=f"An error occurred: {str(e)}",
             headers={"WWW-Authenticate": "Bearer"},
         ) from e

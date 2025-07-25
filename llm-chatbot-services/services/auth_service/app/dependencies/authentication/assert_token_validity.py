@@ -1,6 +1,4 @@
-from datetime import datetime, timezone
 from fastapi import HTTPException, status
-from app.repositories.refresh_token_repository import RefreshTokenRepository
 from app.repositories.user_repository import UserRepository
 
 
@@ -22,24 +20,6 @@ def assert_token_payload_is_required_token_type(
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid token type",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-
-
-async def assert_token_payload_is_not_expired(
-    payload: dict,
-    required_token_type: str,
-    token: str,
-    refresh_token_repository: RefreshTokenRepository,
-) -> bool:
-    """Assert the token payload is not expired"""
-    if _is_token_expired(payload):
-        await _invalidate_expired_token(
-            required_token_type, token, refresh_token_repository
-        )
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Token expired",
             headers={"WWW-Authenticate": "Bearer"},
         )
 
@@ -69,24 +49,7 @@ def _is_token_type_is_required_token_type(
     return token_type == required_token_type
 
 
-def _is_token_expired(payload: dict) -> bool:
-    """Check if the token is expired"""
-    exp = payload.get("exp")
-    expiration_time = datetime.fromtimestamp(exp, tz=timezone.utc)
-    return expiration_time < datetime.now(timezone.utc)
-
-
 async def _is_user_present(email: str, user_repository: UserRepository) -> bool:
     """Check if the user is present"""
     user = await user_repository.get_user_by_email(email)
     return user is not None
-
-
-async def _invalidate_expired_token(
-    required_token_type: str,
-    token: str,
-    refresh_token_repository: RefreshTokenRepository,
-) -> bool:
-    """Invalidate the expired token"""
-    if required_token_type == "refresh":
-        await refresh_token_repository.invalidate(token)
