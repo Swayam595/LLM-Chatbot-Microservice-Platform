@@ -12,13 +12,17 @@ RUN pip install --upgrade pip && pip install poetry
 WORKDIR /app
 
 # Copy pyproject and install deps
-COPY pyproject.toml poetry.lock* /app/
-
+COPY ./services/chatbot_service/pyproject.toml ./services/chatbot_service/poetry.lock* /app/
+COPY ./shared /shared/
 RUN poetry config virtualenvs.create false \
     && poetry install --no-interaction --no-ansi --no-root
 
 # Copy service code
-COPY app /app/app
+COPY ./services/chatbot_service/app /app/app
+COPY ./services/chatbot_service/config.py /app/
+
+# Copy .env file
+COPY ./services/chatbot_service/.env /app/.env
 
 # Expose port
 EXPOSE 8002
