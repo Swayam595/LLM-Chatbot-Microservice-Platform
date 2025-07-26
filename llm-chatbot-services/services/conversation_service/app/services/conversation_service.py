@@ -56,7 +56,7 @@ class ConversationService:
         """Invalidate the cache"""
         logger.info(f"Invalidating cache for user {user_id}")
         await self.__invalidate_cache(user_id)
-        
+
         logger.info(f"Deleting conversations from database for user {user_id}")
         await self.conversation_repo.delete_conversations_by_user(user_id)
 

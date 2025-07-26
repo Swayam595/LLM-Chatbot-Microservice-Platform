@@ -10,7 +10,9 @@ router = APIRouter(prefix="/conversations", tags=["Conversations"])
 logger = get_logger(service_name="conversation_service")
 
 
-@router.post("/message", status_code=status.HTTP_201_CREATED, response_model=ConversationRead)
+@router.post(
+    "/message", status_code=status.HTTP_201_CREATED, response_model=ConversationRead
+)
 async def create_conversation(
     conversation: ConversationCreate,
     service: ConversationService = Depends(get_conversation_service),
@@ -30,10 +32,10 @@ async def get_conversations(
     logger.info(f"Getting conversations for user {user_id}")
     return await service.get_user_conversations(user_id, limit)
 
+
 @router.delete("/history", status_code=status.HTTP_202_ACCEPTED, response_model=dict)
 async def delete_conversations(
-    user_id: int,
-    service: ConversationService = Depends(get_conversation_service),
+    user_id: int, service: ConversationService = Depends(get_conversation_service),
 ):
     """Delete all conversations for a user"""
     logger.info(f"Deleting conversations for user {user_id}")
