@@ -21,12 +21,21 @@ async def health_check() -> dict:
     postgres_health_status = await _check_postgres_connection()
     redis_health_status = await _check_redis_connection()
 
-    service_health_status = _build_service_health_status(redis_health_status, postgres_health_status)
-    
-    if not postgres_health_status["status"] == "ok" or not redis_health_status["status"] == "ok":
-        raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail=service_health_status)
-    
+    service_health_status = _build_service_health_status(
+        redis_health_status, postgres_health_status
+    )
+
+    if (
+        not postgres_health_status["status"] == "ok"
+        or not redis_health_status["status"] == "ok"
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail=service_health_status,
+        )
+
     return service_health_status
+
 
 async def _check_postgres_connection():
     """Check the Postgres connection"""
@@ -62,7 +71,9 @@ async def _check_redis_connection():
     return redis_health_status
 
 
-def _build_service_health_status(redis_health_status: dict, postgres_health_status: dict) -> dict:
+def _build_service_health_status(
+    redis_health_status: dict, postgres_health_status: dict
+) -> dict:
     """Build the health status"""
     return {
         "status": {
