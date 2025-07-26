@@ -31,7 +31,9 @@ class AppConfig:
         """Set the configuration values"""
         self.REDIS_URL = os.getenv("REDIS_URL")
         self.REDIS_CACHE_SIZE = self.__get_redis_cache_size()
-        self.REDIS_ENTRY_EXPIRY_TIME_IN_MINS = self.__get_redis_entry_expiry_time_in_mins()
+        self.REDIS_ENTRY_EXPIRY_TIME_IN_MINS = (
+            self.__get_redis_entry_expiry_time_in_mins()
+        )
 
     def __validate_config(self):
         """Validate the configuration values"""
@@ -44,7 +46,7 @@ class AppConfig:
             raise ConfigError(
                 "REDIS_CACHE_SIZE is required but not set in environment variables."
             )
-        
+
         if self.REDIS_ENTRY_EXPIRY_TIME_IN_MINS is None:
             raise ConfigError(
                 "REDIS_ENTRY_EXPIRY_TIME_IN_MINS is required but not set in environment variables."
