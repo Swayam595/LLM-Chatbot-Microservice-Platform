@@ -1,6 +1,7 @@
 """ Conversation Repository """
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
+from sqlalchemy import delete
 from app.models.conversation import Conversation
 from app.schemas import ConversationCreate
 
@@ -31,3 +32,8 @@ class ConversationRepository:
             .limit(limit)
         )
         return result.scalars().all()
+
+    async def delete_conversations_by_user(self, user_id: int):
+        """Delete conversations by user"""
+        await self.__db.execute(delete(Conversation).where(Conversation.user_id == user_id))
+        await self.__db.commit()

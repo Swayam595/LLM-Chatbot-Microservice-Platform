@@ -52,6 +52,14 @@ class ConversationService:
         await self.__create_new_cache(user_id, conversations)
         return conversations
 
+    async def delete_user_conversations(self, user_id: int):
+        """Invalidate the cache"""
+        logger.info(f"Invalidating cache for user {user_id}")
+        await self.__invalidate_cache(user_id)
+        
+        logger.info(f"Deleting conversations from database for user {user_id}")
+        await self.conversation_repo.delete_conversations_by_user(user_id)
+
     async def __add_entry_to_cache(self, user_id: int, pydantic_obj: ConversationRead):
         """Add expiry to the cache entry"""
         logger.info(f"Adding entry to cache for user {user_id}")
@@ -65,10 +73,15 @@ class ConversationService:
     async def __create_new_cache(self, user_id: int, conversations: list[Conversation]):
         """Prime the cache with the new conversations"""
         redis_key = self.__get_cache_key(user_id)
-        await self.redis_client.delete(redis_key)
+        await self.__invalidate_cache(user_id)
         for convo in conversations:
             pydantic_obj = ConversationRead.model_validate(convo)
             await self.redis_client.rpush(redis_key, pydantic_obj.model_dump_json())
+
+    async def __invalidate_cache(self, user_id: int):
+        """Invalidate the cache"""
+        redis_key = self.__get_cache_key(user_id)
+        await self.redis_client.delete(redis_key)
 
     def __get_cache_key(self, user_id: int):
         """Get the cache key"""
