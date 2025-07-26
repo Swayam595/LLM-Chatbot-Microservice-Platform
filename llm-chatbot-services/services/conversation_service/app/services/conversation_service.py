@@ -6,8 +6,10 @@ from app.services.redis import get_redis_client
 import json
 from config import AppConfig
 
+
 class ConversationService:
     """Conversation Service"""
+
     def __init__(self, repo: ConversationRepository, app_config: AppConfig):
         """Initialize the service"""
         self.conversation_repo = repo
@@ -23,23 +25,25 @@ class ConversationService:
 
         await self.redis_client.lpush(redis_key, pydantic_obj.model_dump_json())
         await self.redis_client.ltrim(redis_key, 0, self.redis_cache_size - 1)
-        
+
         return pydantic_obj
 
     async def get_user_conversations(self, user_id: int, limit: int = 20):
         """Get conversations by user"""
         redis_key = self.__get_cache_key(user_id)
         limit = min(limit, self.redis_cache_size)
-        
+
         cached = await self.redis_client.lrange(redis_key, 0, limit - 1)
-        
+
         if cached:
             return [ConversationRead(**json.loads(msg)) for msg in cached]
 
-        conversations = await self.conversation_repo.get_conversations_by_user(user_id, limit=limit)
+        conversations = await self.conversation_repo.get_conversations_by_user(
+            user_id, limit=limit
+        )
         await self.__create_new_cache(user_id, conversations)
         return conversations
-    
+
     async def __create_new_cache(self, user_id: int, conversations: list[Conversation]):
         """Prime the cache with the new conversations"""
         redis_key = self.__get_cache_key(user_id)

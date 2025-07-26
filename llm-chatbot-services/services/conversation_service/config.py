@@ -37,12 +37,12 @@ class AppConfig:
             raise ConfigError(
                 "REDIS_URL is required but not set in environment variables/ docker-compose."
             )
-        
+
         if self.REDIS_CACHE_SIZE is None:
             raise ConfigError(
                 "REDIS_CACHE_SIZE is required but not set in environment variables."
             )
-    
+
     def __get_redis_cache_size(self) -> int | None:
         """Get the Redis cache size"""
         value = os.getenv("REDIS_CACHE_SIZE")

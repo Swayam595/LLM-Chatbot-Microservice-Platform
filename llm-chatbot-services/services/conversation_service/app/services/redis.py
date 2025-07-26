@@ -7,6 +7,7 @@ logger = get_logger(service_name="conversation_service")
 
 _redis_client = None
 
+
 def get_redis_client(app_config: AppConfig) -> redis.Redis:
     """Get the Redis client."""
     global _redis_client

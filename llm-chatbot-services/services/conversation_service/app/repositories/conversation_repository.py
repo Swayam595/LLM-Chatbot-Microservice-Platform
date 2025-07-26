@@ -4,8 +4,10 @@ from sqlalchemy.future import select
 from app.models.conversation import Conversation
 from app.schemas import ConversationCreate
 
+
 class ConversationRepository:
     """Conversation Repository"""
+
     def __init__(self, db: AsyncSession):
         """Initialize the repository"""
         self.__db = db
@@ -18,7 +20,14 @@ class ConversationRepository:
         await self.__db.refresh(convo)
         return convo
 
-    async def get_conversations_by_user(self, user_id: int, limit: int) -> list[Conversation]:
+    async def get_conversations_by_user(
+        self, user_id: int, limit: int
+    ) -> list[Conversation]:
         """Get conversations by user"""
-        result = await self.__db.execute(select(Conversation).where(Conversation.user_id == user_id).order_by(Conversation.id.desc()).limit(limit))
+        result = await self.__db.execute(
+            select(Conversation)
+            .where(Conversation.user_id == user_id)
+            .order_by(Conversation.id.desc())
+            .limit(limit)
+        )
         return result.scalars().all()

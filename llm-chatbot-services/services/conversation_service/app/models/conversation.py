@@ -3,8 +3,10 @@ from datetime import datetime, timezone
 from sqlalchemy import Column, Integer, String, DateTime
 from shared import Base
 
+
 class Conversation(Base):
     """Conversation model"""
+
     __tablename__ = "conversations"
 
     id = Column(Integer, primary_key=True, index=True)
