@@ -18,7 +18,7 @@ class ConversationRepository:
         await self.__db.refresh(convo)
         return convo
 
-    async def get_conversations_by_user(self, user_id: int):
+    async def get_conversations_by_user(self, user_id: int, limit: int) -> list[Conversation]:
         """Get conversations by user"""
-        result = await self.__db.execute(select(Conversation).where(Conversation.user_id == user_id))
+        result = await self.__db.execute(select(Conversation).where(Conversation.user_id == user_id).order_by(Conversation.id.desc()).limit(limit))
         return result.scalars().all()

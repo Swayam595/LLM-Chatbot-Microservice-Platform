@@ -14,5 +14,6 @@ class ConversationRead(BaseModel):
     message: str
     created_at: datetime
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }
