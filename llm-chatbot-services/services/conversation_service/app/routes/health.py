@@ -76,7 +76,7 @@ def _build_service_health_status(
 ) -> dict:
     """Build the health status"""
     return {
-        "status": {
+        "health": {
             "conversation_service": {
                 "status": "ok",
                 "detail": "Conversation service is healthy",
