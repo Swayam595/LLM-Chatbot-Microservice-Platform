@@ -1,4 +1,5 @@
-""" Conversation Service """
+"""Conversation Service"""
+
 import json
 from shared import get_logger
 from app.repositories.conversation_repository import ConversationRepository
@@ -32,13 +33,17 @@ class ConversationService:
         pydantic_obj = ConversationRead.model_validate(saved_message)
         await self.__add_entry_to_cache(conversation.user_id, pydantic_obj)
 
-        self.__logger.info(f"Adding document to vector database for user {saved_message.user_id} and message {saved_message.id}")
+        self.__logger.info(
+            f"Adding document to vector database for user {saved_message.user_id} and message {saved_message.id}"
+        )
         self.vector_db_service.add_document(
             user_id=saved_message.user_id,
             message_id=saved_message.id,
             message=saved_message.message,
         )
-        self.__logger.info(f"Document added to vector database for user {saved_message.user_id} and message {saved_message.id}")
+        self.__logger.info(
+            f"Document added to vector database for user {saved_message.user_id} and message {saved_message.id}"
+        )
         return pydantic_obj
 
     async def get_user_conversations(self, user_id: int, limit: int = 20):

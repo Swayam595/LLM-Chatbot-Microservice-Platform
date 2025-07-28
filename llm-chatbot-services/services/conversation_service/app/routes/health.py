@@ -12,6 +12,7 @@ logger = get_logger(service_name="conversation_service")
 
 router = APIRouter(prefix="/health", tags=["Service Health"])
 
+
 @router.get("/", status_code=status.HTTP_200_OK, response_model=dict)
 async def health_check() -> dict:
     """Health check endpoint"""
@@ -40,6 +41,7 @@ async def health_check() -> dict:
         "detail": "Conversation service and its dependencies are healthy",
     }
 
+
 @router.get("/all", status_code=status.HTTP_200_OK, response_model=dict)
 async def health_check_all() -> dict:
     """Health check endpoint"""
@@ -64,6 +66,7 @@ async def health_check_all() -> dict:
         )
 
     return service_health_status
+
 
 async def _check_postgres_connection():
     """Check the Postgres connection"""
@@ -98,6 +101,7 @@ async def _check_redis_connection():
         redis_health_status["detail"] = str(e)
     return redis_health_status
 
+
 def _check_chroma_db_connection():
     """Check the ChromaDB connection"""
     chroma_db_health_status = {}
@@ -115,7 +119,9 @@ def _check_chroma_db_connection():
 
 
 def _build_service_health_status(
-    redis_health_status: dict, postgres_health_status: dict, chroma_db_health_status: dict
+    redis_health_status: dict,
+    postgres_health_status: dict,
+    chroma_db_health_status: dict,
 ) -> dict:
     """Build the health status"""
     return {

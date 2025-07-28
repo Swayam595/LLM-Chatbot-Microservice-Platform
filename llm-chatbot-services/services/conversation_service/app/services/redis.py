@@ -1,4 +1,5 @@
 """Redis client for the conversation service."""
+
 import redis.asyncio as redis
 from shared import get_logger
 from config import AppConfig

@@ -7,8 +7,13 @@ logger = get_logger(service_name="conversation_service")
 
 router = APIRouter(prefix="/semantic-search", tags=["Semantic Search"])
 
+
 @router.get("/")
-async def search_messages(query: str = Query(...), user_id: int = Query(...), vector_db: VectorDBService = Depends(get_vector_db_service)):
+async def search_messages(
+    query: str = Query(...),
+    user_id: int = Query(...),
+    vector_db: VectorDBService = Depends(get_vector_db_service),
+):
     """Return semantically similar messages"""
     logger.info(f"Searching for similar messages for user {user_id} with query {query}")
     return {"matches": vector_db.search_similar(user_id=user_id, query=query)}

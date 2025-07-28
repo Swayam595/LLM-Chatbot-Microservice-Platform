@@ -8,6 +8,7 @@ from config import AppConfig
 
 class VectorDBService:
     """Service for the vector database."""
+
     def __init__(self):
         """Initialize the vector database service."""
         self.app_config = AppConfig()
@@ -17,7 +18,9 @@ class VectorDBService:
 
     def add_document(self, user_id: int, message_id: int, message: str):
         """Add a document to the vector database."""
-        self._logger.info(f"Adding document to vector database for user {user_id} and message {message_id}")
+        self._logger.info(
+            f"Adding document to vector database for user {user_id} and message {message_id}"
+        )
         vector = mock_embedding(message)
         self.collection.add(
             ids=[f"{user_id}-{message_id}"],
@@ -25,15 +28,17 @@ class VectorDBService:
             metadatas=[{"user_id": user_id, "message_id": message_id}],
             embeddings=[vector],
         )
-        self._logger.info(f"Document added to vector database for user {user_id} and message {message_id}")
+        self._logger.info(
+            f"Document added to vector database for user {user_id} and message {message_id}"
+        )
 
     def search_similar(self, user_id: int, query: str, top_k: int = 5) -> list[str]:
         """Search for similar documents in the vector database."""
-        self._logger.info(f"Searching for similar documents in the vector database for user {user_id} and query {query}")
+        self._logger.info(
+            f"Searching for similar documents in the vector database for user {user_id} and query {query}"
+        )
         query_vector = mock_embedding(query)
         results = self.collection.query(
-            query_embeddings=[query_vector],
-            n_results=top_k,
-            where={"user_id": user_id}
+            query_embeddings=[query_vector], n_results=top_k, where={"user_id": user_id}
         )
         return results["documents"][0] if results["documents"] else []

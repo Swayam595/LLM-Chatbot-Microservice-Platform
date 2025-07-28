@@ -1,4 +1,5 @@
-""" Conversation Routes """
+"""Conversation Routes"""
+
 from fastapi import APIRouter, Depends, status, Query
 from shared import get_logger
 from app.schemas import ConversationCreate, ConversationRead
@@ -35,7 +36,8 @@ async def get_conversations(
 
 @router.delete("/history", status_code=status.HTTP_202_ACCEPTED, response_model=dict)
 async def delete_conversations(
-    user_id: int, service: ConversationService = Depends(get_conversation_service),
+    user_id: int,
+    service: ConversationService = Depends(get_conversation_service),
 ):
     """Delete all conversations for a user"""
     logger.info(f"Deleting conversations endpoint called")

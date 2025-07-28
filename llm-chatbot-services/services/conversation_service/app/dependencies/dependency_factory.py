@@ -1,4 +1,5 @@
-""" Conversation Service Dependencies """
+"""Conversation Service Dependencies"""
+
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
