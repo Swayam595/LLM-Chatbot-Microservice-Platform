@@ -114,7 +114,7 @@ For each service name provided by the user (e.g., `service-a`, `service-b`), you
 - **Create a `dockerfile` for the service** in `services/{service_name}/dockerfile`. This file must be structured correctly to handle the local dependency.
   ```dockerfile
   # Base image
-  FROM python:3.10-slim
+  FROM python:3.11-slim
 
   # Set environment variables
   ENV PYTHONDONTWRITEBYTECODE 1

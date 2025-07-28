@@ -6,7 +6,7 @@ authors = ["Swayam Swarooop Mishra <swayam.swaroop175@gmail.com>"]
 packages = [{ include = "app" }]
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.11"
 fastapi = "^0.110.0"
 uvicorn = "^0.29.0"
 passlib = {extras = ["bcrypt"], version = "^1.7.4"}

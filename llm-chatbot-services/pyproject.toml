@@ -6,7 +6,7 @@ authors = ["Swayam Swarooop Mishra <swayam.swaroop175@gmail.com>"]
 package-mode = false
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.11"
 python-dotenv = "^1.1.1"
 
 # Local editable installs for all services and shared lib
