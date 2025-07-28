@@ -26,8 +26,11 @@ services:
     volumes:
       - ./services/chatbot_service/app:/app/app
       - ./shared:/app/shared
+    depends_on:
+      - conversation-service
     environment:
       - OPENAI_API_KEY=your-openai-key
+      - CONVERSATION_SERVICE_URL=http://conversation-service:8003
 
   conversation-service:
     build:
