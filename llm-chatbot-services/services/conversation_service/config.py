@@ -1,4 +1,4 @@
-"""Configuration module for the auth service"""
+"""Configuration module for the conversation service"""
 
 import os
 from dotenv import load_dotenv
