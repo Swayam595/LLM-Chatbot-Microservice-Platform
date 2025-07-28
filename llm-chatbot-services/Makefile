@@ -46,6 +46,13 @@ build-up-chatbot-service:
 	docker-compose build chatbot-service
 	docker-compose up chatbot-service
 
+build-up-conversation-service-init:
+	make build-up-chroma
+	make build-up-postgres
+	make build-up-redis
+	docker-compose build conversation-service
+	docker-compose up conversation-service
+
 build-up-conversation-service:
 	docker-compose build conversation-service
 	docker-compose up conversation-service
@@ -69,6 +76,10 @@ restart-conversation-service:
 build-up-postgres:
 	docker-compose build postgres
 	docker-compose up postgres
+
+build-up-chromadb:
+	docker-compose build chromadb
+	docker-compose up chromadb
 
 restart-postgres:
 	docker-compose down postgres

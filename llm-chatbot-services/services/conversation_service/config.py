@@ -22,6 +22,7 @@ class AppConfig:
     REDIS_URL: str | None = None
     REDIS_CACHE_SIZE: int | None = None
     REDIS_ENTRY_EXPIRY_TIME_IN_MINS: int | None = None
+    CHROMA_DB_URL: str | None = None
 
     def __init__(self):
         self.__set_config()
@@ -34,6 +35,7 @@ class AppConfig:
         self.REDIS_ENTRY_EXPIRY_TIME_IN_MINS = (
             self.__get_redis_entry_expiry_time_in_mins()
         )
+        self.CHROMA_DB_URL = os.getenv("CHROMA_DB_URL")
 
     def __validate_config(self):
         """Validate the configuration values"""
@@ -50,6 +52,11 @@ class AppConfig:
         if self.REDIS_ENTRY_EXPIRY_TIME_IN_MINS is None:
             raise ConfigError(
                 "REDIS_ENTRY_EXPIRY_TIME_IN_MINS is required but not set in environment variables."
+            )
+
+        if self.CHROMA_DB_URL is None:
+            raise ConfigError(
+                "CHROMA_DB_URL is required but not set in environment variables."
             )
 
     def __get_redis_cache_size(self) -> int | None:

@@ -43,9 +43,11 @@ services:
     depends_on:
       - postgres
       - redis
+      - chromadb
     environment:
       - DATABASE_URL=postgresql+asyncpg://user:password@postgres:5432/convo_db
       - REDIS_URL=redis://redis:6379
+      - CHROMA_DB_URL=http://chromadb:8000
 
   api-gateway:
     build:
@@ -79,6 +81,15 @@ services:
     container_name: redis
     ports:
       - "6379:6379"
+    
+  chromadb:
+    image: chromadb/chroma
+    container_name: chromadb
+    volumes:
+      - chroma_data:/chroma/.chroma/index
+    ports:
+      - "8004:8000"
 
 volumes:
   postgres_data:
+  chroma_data:

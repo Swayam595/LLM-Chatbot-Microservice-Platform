@@ -4,7 +4,11 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from shared.database import init_db, shutdown_db
 from shared.logger import get_logger
-from app.routes import conversation_router, health_router
+from app.routes import (
+    conversation_router,
+    health_router,
+    semantic_search_router,
+)
 
 logger = get_logger(service_name="conversation-service")
 logger.info("Starting Conversation Service")
@@ -24,6 +28,7 @@ app = FastAPI(lifespan=lifespan)
 
 app.include_router(conversation_router)
 app.include_router(health_router)
+app.include_router(semantic_search_router)
 
 
 @app.get("/")

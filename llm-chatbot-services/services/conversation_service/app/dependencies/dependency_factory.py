@@ -1,10 +1,13 @@
 """ Conversation Service Dependencies """
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
+
 from shared.database import get_db
+from config import AppConfig
 from app.repositories.conversation_repository import ConversationRepository
 from app.services.conversation_service import ConversationService
-from config import AppConfig
+from app.services.vector_db_service import VectorDBService
+
 
 _conversation_service_app_config = AppConfig()
 
@@ -25,3 +28,8 @@ def get_conversation_service(
 ):
     """Get the conversation service"""
     return ConversationService(conversation_repo, app_config)
+
+
+def get_vector_db_service():
+    """Get the vector database service"""
+    return VectorDBService()

@@ -1,5 +1,5 @@
 """ Conversation Routes """
-from fastapi import APIRouter, Depends, status, Response
+from fastapi import APIRouter, Depends, status, Query
 from shared import get_logger
 from app.schemas import ConversationCreate, ConversationRead
 from app.services.conversation_service import ConversationService
@@ -18,18 +18,18 @@ async def create_conversation(
     service: ConversationService = Depends(get_conversation_service),
 ):
     """Create a new conversation"""
-    logger.info(f"Creating conversation for user {conversation.user_id}")
+    logger.info(f"Creating conversation endpoint called")
     return await service.create_conversation(conversation)
 
 
 @router.get("/history", response_model=list[ConversationRead])
 async def get_conversations(
-    user_id: int,
-    limit: int = 20,
+    user_id: int = Query(...),
+    limit: int = Query(default=20),
     service: ConversationService = Depends(get_conversation_service),
 ):
     """Get all conversations for a user"""
-    logger.info(f"Getting conversations for user {user_id}")
+    logger.info(f"Getting conversations endpoint called")
     return await service.get_user_conversations(user_id, limit)
 
 
@@ -38,6 +38,6 @@ async def delete_conversations(
     user_id: int, service: ConversationService = Depends(get_conversation_service),
 ):
     """Delete all conversations for a user"""
-    logger.info(f"Deleting conversations for user {user_id}")
+    logger.info(f"Deleting conversations endpoint called")
     await service.delete_user_conversations(user_id)
     return {"message": f"Conversations deleted for user {user_id}"}

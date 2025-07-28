@@ -14,7 +14,7 @@ sqlalchemy = "^2.0.41"
 shared = {path = "../../shared", develop = true}
 redis = "^6.2.0"
 dotenv = "^0.9.9"
-httpx = "^0.28.1"
+chromadb = "^1.0.15"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
