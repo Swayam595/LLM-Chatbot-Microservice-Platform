@@ -72,7 +72,7 @@ The `conversation-service` is responsible for:
 
 ## 🛠️ Dev Notes
 
-- Ports used: `8003` for service, `8008` for ChromaDB container
+- Ports used: `8003` for service, `8000` for ChromaDB container
 - Environment variables:
   - `DATABASE_URL`
   - `REDIS_URL`
@@ -110,7 +110,7 @@ conversation-service/
 | Health check                               | Low      | ✅ Done     |
 | Unit tests                                 | Medium   | ❌ Skipped  |
 | Access control                             | High     | ✅ (via Gateway) |
-| OpenAPI tags / docs                        | Low      | ⚠️ Pending  |
+| OpenAPI tags / docs                        | Low      | ✅ Pending  |
 
 ---
 
