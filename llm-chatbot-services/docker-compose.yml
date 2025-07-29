@@ -29,7 +29,7 @@ services:
     depends_on:
       - conversation-service
     environment:
-      - OPENAI_API_KEY=your-openai-key
+      - GEMINI_API_KEY=AIzaSyAMOb7GiwTi_P2nv9X6kUvroKifPwhMTeY
       - CONVERSATION_SERVICE_URL=http://conversation-service:8003
 
   conversation-service:
