@@ -1,4 +1,5 @@
 """Chat Service Routes"""
+
 from fastapi import APIRouter, Depends
 from app.schemas.chat_schema import ChatRequest, ChatResponse
 from app.services.chat_service import ChatService
