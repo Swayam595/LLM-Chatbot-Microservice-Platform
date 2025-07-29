@@ -10,29 +10,28 @@ This markdown outlines the step-by-step implementation plan for the `chatbot-ser
   - ✅ `routes/`
   - ✅ `services/`
   - ✅ `schemas/`
-  - [ ] `llm/` (Strategy Pattern for multiple LLMs)
+  - ✅ `llm/`
   - ✅ `dependencies/`
   - ✅ `utils/`
 
 ---
 
 ## 2. 💬 Input Handling Route
-- [ ] Create `POST /chat` endpoint
-- [ ] Accept `user_id` and `message`
-- [ ] Validate input and pass to service layer
+- ✅ Create `POST /chat` endpoint
+- ✅ Accept `user_id` and `message`
+- ✅ Validate input and pass to service layer
 
 ---
 
 ## 3. 🧠 Prompt Construction
-- [ ] Fetch recent conversation from `conversation-service`
-- [ ] Construct context-aware prompt using user history
+- ✅ Fetch recent conversation from `conversation-service`
+- ✅ Construct context-aware prompt using user history
 
 ---
 
 ## 4. 🤖 LLM Integration
-- [ ] Integrate OpenAI API
-- [ ] Implement Strategy pattern for LLM abstraction
-  - [ ] Stub for Claude / Mistral
+- ✅ Integrate Gemini API
+- ✅ Implement Strategy pattern for LLM abstractionl
 
 ---
 

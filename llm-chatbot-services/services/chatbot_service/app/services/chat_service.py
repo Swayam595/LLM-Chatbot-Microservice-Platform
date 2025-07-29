@@ -3,7 +3,7 @@
 from shared.logger import get_logger
 from app.schemas.chat_schema import ChatRequest, ChatResponse
 from app.services.conversation_client import ConversationClient
-
+from app.llm.factory import get_llm_provider
 
 class ChatService:
     """Service for the chat service"""
@@ -12,15 +12,17 @@ class ChatService:
         """Initialize the chat service"""
         self.logger = get_logger(service_name="chat_service")
         self.conversation_client = ConversationClient()
+        self.llm_provider = None
 
-    async def handle_chat(self, request: ChatRequest) -> ChatResponse:
+    async def handle_chat(self, request: ChatRequest, provider: str) -> ChatResponse:
         """Handle the chat request"""
+        self.llm_provider = get_llm_provider(provider)
         self.logger.info(f"Handling chat request for user {request.user_id}")
         history = await self.conversation_client.get_user_history(request.user_id)
-        
-        # TODO: Build prompt using OpenAI #pylint: disable=fixme
+
         prompt = self._build_prompt(history, request.message)
-        return ChatResponse(response=prompt)
+        response = await self.llm_provider.generate_response(prompt)
+        return ChatResponse(response=self._parse_response(response))
 
     def _build_prompt(self, history: list[dict], current_message: str) -> str:
         """Build the prompt for the chat"""
@@ -29,3 +31,7 @@ class ChatService:
             [f"{item['message']}" for item in history[-5:]]  
         )
         return f"Conversation so far:\n{conversation_snippets}\nUser: {current_message}"
+
+    def _parse_response(self, response: str) -> str:
+        """Parse the response from the LLM"""
+        return response.json()["candidates"][0]["content"]["parts"][0]["text"]
