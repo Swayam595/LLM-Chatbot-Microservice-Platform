@@ -19,6 +19,17 @@ class ConversationClient:
             f"/conversations/history?user_id={user_id}", "GET", {}
         )
         return response.json()
+
+    async def save_message(self, user_id: int, message: str):
+        """Save a message to the conversation service"""
+        self.logger.info(f"Saving message for user {user_id}")
+        response = await self._make_request(
+            "/conversations/message", "POST", {
+                "user_id": user_id,
+                "message": message
+            }
+        )
+        return response.json()
     
     async def _make_request(self, path: str, method: str, json: dict):
         """Make a request to the conversation service"""

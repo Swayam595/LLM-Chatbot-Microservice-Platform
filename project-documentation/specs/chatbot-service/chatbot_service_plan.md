@@ -36,8 +36,8 @@ This markdown outlines the step-by-step implementation plan for the `chatbot-ser
 ---
 
 ## 5. 📤 Response Handling
-- [ ] Return generated response to client
-- [ ] Persist response and message via `conversation-service`
+- ✅ Return generated response to client
+- ✅ Persist response and message via `conversation-service`
 
 ---
 

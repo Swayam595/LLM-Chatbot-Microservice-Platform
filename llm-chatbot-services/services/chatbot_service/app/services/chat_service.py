@@ -22,7 +22,10 @@ class ChatService:
 
         prompt = self._build_prompt(history, request.message)
         response = await self.llm_provider.generate_response(prompt)
-        return ChatResponse(response=self._parse_response(response))
+        reply = self._parse_response(response)
+        await self.conversation_client.save_message(request.user_id, request.message)
+        await self.conversation_client.save_message(request.user_id, reply)
+        return ChatResponse(response=reply)
 
     def _build_prompt(self, history: list[dict], current_message: str) -> str:
         """Build the prompt for the chat"""
