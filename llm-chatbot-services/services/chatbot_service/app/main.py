@@ -6,7 +6,7 @@ from app.routes import chat_router, health_router
 
 logger = get_logger(service_name="chatbot_service")
 
-logger.info("Starting Chatbot Service is complete.")
+logger.info("Chatbot Service is up and running.")
 
 app = FastAPI()
 
