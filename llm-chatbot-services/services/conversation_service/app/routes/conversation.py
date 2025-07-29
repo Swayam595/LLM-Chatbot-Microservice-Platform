@@ -19,7 +19,7 @@ async def create_conversation(
     service: ConversationService = Depends(get_conversation_service),
 ):
     """Create a new conversation"""
-    logger.info(f"Creating conversation endpoint called")
+    logger.info("Creating conversation endpoint called")
     return await service.create_conversation(conversation)
 
 
@@ -30,7 +30,7 @@ async def get_conversations(
     service: ConversationService = Depends(get_conversation_service),
 ):
     """Get all conversations for a user"""
-    logger.info(f"Getting conversations endpoint called")
+    logger.info("Getting conversations endpoint called")
     return await service.get_user_conversations(user_id, limit)
 
 
@@ -40,6 +40,6 @@ async def delete_conversations(
     service: ConversationService = Depends(get_conversation_service),
 ):
     """Delete all conversations for a user"""
-    logger.info(f"Deleting conversations endpoint called")
+    logger.info("Deleting conversations endpoint called")
     await service.delete_user_conversations(user_id)
     return {"message": f"Conversations deleted for user {user_id}"}
