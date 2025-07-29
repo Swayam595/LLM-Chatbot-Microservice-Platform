@@ -1,6 +1,6 @@
 """Chatbot Service Health Check"""
 
-import httpx
+import requests
 from fastapi import APIRouter, HTTPException, status, Depends
 from shared import get_logger
 from config import AppConfig
@@ -16,13 +16,10 @@ def health_check(app_config: AppConfig = Depends(get_app_config)) -> dict:
     """Health check endpoint"""
     logger.info("Checking health of chatbot service")
     conversation_service_health = _check_conversation_service_health(
-        app_config, "health"
+        app_config
     )
     if conversation_service_health.status_code != 200:
-        raise HTTPException(
-            status_code=500,
-            detail={"status": "error", "detail": conversation_service_health.json()},
-        )
+        _throw_exception(conversation_service_health.status_code, conversation_service_health.json())
 
     return {
         "status": "ok",
@@ -35,14 +32,11 @@ def health_check_all(app_config: AppConfig = Depends(get_app_config)) -> dict:
     """Health check all endpoint"""
     logger.info("Checking health of chatbot service and it's dependencies")
     conversation_service_health = _check_conversation_service_health(
-        app_config, "health/all"
+        app_config, "/all"
     )
 
     if conversation_service_health.status_code != 200:
-        raise HTTPException(
-            status_code=500,
-            detail={"status": "error", "detail": conversation_service_health.json()},
-        )
+        _throw_exception(conversation_service_health.status_code, conversation_service_health.json())
 
     return {
         "status": "ok",
@@ -55,15 +49,29 @@ def health_check_all(app_config: AppConfig = Depends(get_app_config)) -> dict:
 
 
 def _check_conversation_service_health(
-    app_config: AppConfig, health_endpoint: str
-) -> bool:
+    app_config: AppConfig, health_endpoint: str = None
+) -> requests.Response | HTTPException:
     """Check the health of the conversation service"""
-    try:
-        conversation_service_health_check_url = (
-            f"{app_config.CONVERSATION_SERVICE_URL}/{health_endpoint}"
+    conversation_service_health_check_url = (
+            f"{app_config.CONVERSATION_SERVICE_URL}/health"
         )
-        response = httpx.get(conversation_service_health_check_url)
+    if health_endpoint is not None:
+        conversation_service_health_check_url = f"{conversation_service_health_check_url}{health_endpoint}"
+    
+    return _make_request(conversation_service_health_check_url, "GET", {})
+
+def _make_request(url: str, method: str, json: dict) -> requests.Response:
+    """Make a request to the given url"""
+    try:
+        response = requests.request(method, url, json=json)
         return response
     except Exception as e: #pylint: disable=broad-exception-caught
-        logger.error(f"Error checking conversation service health: {e}")
-        return False
+        logger.error(f"Error making request to {url}: {e}")
+        _throw_exception(500, str(e))
+
+def _throw_exception(status_code: int, detail: str) -> HTTPException:
+    """Throw an exception"""
+    raise HTTPException(
+        status_code=status_code,
+        detail={"status": "error", "detail": detail},
+    )
