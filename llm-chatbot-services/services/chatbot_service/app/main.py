@@ -1,7 +1,12 @@
 """Module for the chatbot service"""
 
 from fastapi import FastAPI
-from app.routes import chat_router
+from shared import get_logger
+from app.routes import chat_router, health_router
+
+logger = get_logger(service_name="chatbot_service")
+
+logger.info("Starting Chatbot Service is complete.")
 
 app = FastAPI()
 
@@ -12,10 +17,5 @@ def read_root():
     return {"message": "Chatbot Service is running"}
 
 
-@app.get("/health")
-def health_check():
-    """Health check endpoint"""
-    return {"status": "ok"}
-
-
 app.include_router(chat_router)
+app.include_router(health_router)

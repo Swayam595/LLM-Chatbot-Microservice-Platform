@@ -35,4 +35,3 @@ class AppConfig:
             raise ConfigError(
                 "CONVERSATION_SERVICE_URL is required but not set in environment variables/ docker-compose."
             )
-

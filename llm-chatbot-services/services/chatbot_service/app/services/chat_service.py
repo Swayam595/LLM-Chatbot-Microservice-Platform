@@ -1,9 +1,12 @@
 """Service for the chat service"""
+
 from shared.logger import get_logger
 from app.schemas.chat_schema import ChatRequest, ChatResponse
 
+
 class ChatService:
     """Service for the chat service"""
+
     def __init__(self):
         """Initialize the chat service"""
         self.logger = get_logger(service_name="chat_service")
