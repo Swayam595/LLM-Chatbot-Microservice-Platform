@@ -1,9 +1,8 @@
 """Factory for dependencies"""
-
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
+from shared import Database
 from config import AppConfig
-from shared.database import get_db
 from app.repositories.user_repository import UserRepository
 from app.repositories.refresh_token_repository import RefreshTokenRepository
 from app.services.user_service import UserService
@@ -16,14 +15,19 @@ def get_app_config() -> AppConfig:
     """Get the app config"""
     return _auth_service_app_config
 
+async def get_db_session() -> AsyncSession:
+    """Get the database session"""
+    db_object = Database()
+    return await db_object.get_session()
 
-def get_user_repository(db: AsyncSession = Depends(get_db),) -> UserRepository:
+
+def get_user_repository(db: AsyncSession = Depends(get_db_session),) -> UserRepository:
     """Get the user repository"""
     return UserRepository(db)
 
 
 def get_refresh_token_repository(
-    db: AsyncSession = Depends(get_db),
+    db: AsyncSession = Depends(get_db_session),
 ) -> RefreshTokenRepository:
     """Get the refresh token repository"""
     return RefreshTokenRepository(db)

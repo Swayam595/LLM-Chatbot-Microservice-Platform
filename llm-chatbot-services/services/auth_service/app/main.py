@@ -3,7 +3,7 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, Depends
 from shared import get_logger
-from shared.database import init_db, shutdown_db
+from shared import Database
 from config import AppConfig
 
 from app.services.refresh_token_service import RefreshTokenService
@@ -36,16 +36,17 @@ from app.dependencies.dependency_factory import (
 from app.services.reset_password_service import ResetPasswordService
 
 logger = get_logger(service_name="auth_service")
+db_object = Database()
 
 
 @asynccontextmanager
 async def lifespan(_fastapi_app: FastAPI):
     """Lifespan for the application"""
     logger.info("Initializing database")
-    await init_db()
+    await db_object.init_db()
     yield
     logger.info("Shutting down database")
-    await shutdown_db()
+    await db_object.shutdown_db()
 
 
 app = FastAPI(lifespan=lifespan)
