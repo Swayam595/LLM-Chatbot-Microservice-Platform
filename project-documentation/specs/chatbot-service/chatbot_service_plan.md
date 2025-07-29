@@ -24,14 +24,16 @@ This markdown outlines the step-by-step implementation plan for the `chatbot-ser
 ---
 
 ## 3. 🧠 Prompt Construction
-- ✅ Fetch recent conversation from `conversation-service`
+- ✅ Hybrid Prompt Construction in the chatbot service using both:
+  - 🕓 Recent chat history (from conversation-service)
+  - 🔍 Semantically similar past messages (via ChromaDB)
 - ✅ Construct context-aware prompt using user history
 
 ---
 
 ## 4. 🤖 LLM Integration
 - ✅ Integrate Gemini API
-- ✅ Implement Strategy pattern for LLM abstractionl
+- ✅ Implement Strategy pattern for LLM abstraction
 
 ---
 

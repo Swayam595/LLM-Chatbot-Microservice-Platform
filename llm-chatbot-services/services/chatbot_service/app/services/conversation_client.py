@@ -1,5 +1,6 @@
 """Conversation Client"""
 import httpx
+import urllib.parse
 from shared import get_logger
 from app.dependencies.dependency_factory import get_app_config
 
@@ -17,6 +18,15 @@ class ConversationClient:
         self.logger.info(f"Getting user history for user {user_id}")
         response = await self._make_request(
             f"/conversations/history?user_id={user_id}", "GET", {}
+        )
+        return response.json()
+
+    async def get_semantic_search_results(self, user_id: int, query: str):
+        """Get semantic search results for a user"""
+        self.logger.info(f"Getting semantic search results for user {user_id}")
+        encoded_query = urllib.parse.quote(query)
+        response = await self._make_request(
+            f"/semantic-search/?user_id={user_id}&query={encoded_query}", "GET", {}
         )
         return response.json()
 
