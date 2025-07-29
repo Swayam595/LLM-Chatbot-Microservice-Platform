@@ -2,12 +2,10 @@
 
 from .logger import get_logger
 from .base import Base
-from .database import get_db, init_db, shutdown_db
+from .database import Database
 
 __all__ = [
     "get_logger",
     "Base",
-    "get_db",
-    "init_db",
-    "shutdown_db",
+    "Database",
 ]

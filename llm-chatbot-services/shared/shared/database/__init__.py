@@ -1,7 +1,3 @@
-from .db import get_db, init_db, shutdown_db
+from .db import Database
 
-__all__ = [
-    "get_db",
-    "init_db",
-    "shutdown_db",
-]
+__all__ = ["Database"]
