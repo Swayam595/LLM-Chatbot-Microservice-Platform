@@ -30,6 +30,7 @@ services:
       - conversation-service
     environment:
       - GEMINI_API_KEY=AIzaSyAMOb7GiwTi_P2nv9X6kUvroKifPwhMTeY
+      - GEMINI_URL=https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent
       - CONVERSATION_SERVICE_URL=http://conversation-service:8003
 
   conversation-service:

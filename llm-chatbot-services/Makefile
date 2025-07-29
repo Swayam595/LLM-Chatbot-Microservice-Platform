@@ -46,8 +46,8 @@ build-up-chatbot-service:
 	docker-compose build chatbot-service
 	docker-compose up chatbot-service
 
-build-up-conversation-service-init:
-	make build-up-chroma
+build-up-conversation-service:
+	make build-up-chromadb
 	make build-up-postgres
 	make build-up-redis
 	docker-compose build conversation-service
