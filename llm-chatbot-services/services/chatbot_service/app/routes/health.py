@@ -1,9 +1,9 @@
 """Chatbot Service Health Check"""
 
-import requests
+import httpx
 from fastapi import APIRouter, HTTPException, status, Depends
-from config import AppConfig
 from shared import get_logger
+from config import AppConfig
 from app.dependencies.dependency_factory import get_app_config
 
 logger = get_logger(service_name="chatbot_service")
@@ -62,8 +62,8 @@ def _check_conversation_service_health(
         conversation_service_health_check_url = (
             f"{app_config.CONVERSATION_SERVICE_URL}/{health_endpoint}"
         )
-        response = requests.get(conversation_service_health_check_url)
+        response = httpx.get(conversation_service_health_check_url)
         return response
-    except Exception as e:
+    except Exception as e: #pylint: disable=broad-exception-caught
         logger.error(f"Error checking conversation service health: {e}")
         return False
