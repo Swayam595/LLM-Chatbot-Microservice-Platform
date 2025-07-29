@@ -39,12 +39,12 @@ class AppConfig:
             raise ConfigError(
                 "CONVERSATION_SERVICE_URL is required but not set in environment variables/ docker-compose."
             )
-        
+
         if self.GEMINI_API_KEY is None:
             raise ConfigError(
                 "GEMINI_API_KEY is required but not set in environment variables/ docker-compose."
             )
-        
+
         if self.GEMINI_URL is None:
             raise ConfigError(
                 "GEMINI_URL is required but not set in environment variables/ docker-compose."

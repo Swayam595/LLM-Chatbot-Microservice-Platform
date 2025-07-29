@@ -5,6 +5,7 @@ from app.schemas.chat_schema import ChatRequest, ChatResponse
 from app.services.conversation_client import ConversationClient
 from app.llm.factory import get_llm_provider
 
+
 class ChatService:
     """Service for the chat service"""
 
@@ -19,7 +20,11 @@ class ChatService:
         self.llm_provider = get_llm_provider(provider)
         self.logger.info(f"Handling chat request for user {request.user_id}")
         history = await self.conversation_client.get_user_history(request.user_id)
-        semantic_search_results = await self.conversation_client.get_semantic_search_results(request.user_id, request.message)
+        semantic_search_results = (
+            await self.conversation_client.get_semantic_search_results(
+                request.user_id, request.message
+            )
+        )
 
         prompt = self._build_prompt(history, request.message, semantic_search_results)
         response = await self.llm_provider.generate_response(prompt)
@@ -28,12 +33,17 @@ class ChatService:
         await self.conversation_client.save_message(request.user_id, reply)
         return ChatResponse(response=reply)
 
-    def _build_prompt(self, history: list[dict], current_message: str, semantic_search_results: dict[list[str]]) -> str:
+    def _build_prompt(
+        self,
+        history: list[dict],
+        current_message: str,
+        semantic_search_results: dict[list[str]],
+    ) -> str:
         """Build the prompt for the chat"""
-        self.logger.info(f"Building prompt for user from last 20 messages. Number of available messages: {len(history)}")
-        conversation_snippets = "\n".join(
-            [f"{item['message']}" for item in history]  
+        self.logger.info(
+            f"Building prompt for user from last 20 messages. Number of available messages: {len(history)}"
         )
+        conversation_snippets = "\n".join([f"{item['message']}" for item in history])
 
         if len(semantic_search_results["matches"]) > 0:
             conversation_snippets += "\n\nSemantic search results:\n"

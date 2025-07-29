@@ -1,4 +1,5 @@
 """Chat Service Routes"""
+
 from fastapi import APIRouter, Depends, Query, HTTPException, status
 from shared import get_logger
 from app.schemas.chat_schema import ChatRequest, ChatResponse
