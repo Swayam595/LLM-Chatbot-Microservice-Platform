@@ -1,6 +1,7 @@
 """Module for the chatbot service"""
 
 from fastapi import FastAPI
+from app.routes import chat_router
 
 app = FastAPI()
 
@@ -15,3 +16,6 @@ def read_root():
 def health_check():
     """Health check endpoint"""
     return {"status": "ok"}
+
+
+app.include_router(chat_router)
