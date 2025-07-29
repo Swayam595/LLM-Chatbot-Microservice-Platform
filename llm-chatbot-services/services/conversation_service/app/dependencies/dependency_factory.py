@@ -3,7 +3,7 @@
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from shared.database import get_db
+from shared import Database
 from config import AppConfig
 from app.repositories.conversation_repository import ConversationRepository
 from app.services.conversation_service import ConversationService
@@ -18,7 +18,15 @@ def get_app_config() -> AppConfig:
     return _conversation_service_app_config
 
 
-def get_conversation_repo(db: AsyncSession = Depends(get_db)) -> ConversationRepository:
+async def get_db_session() -> AsyncSession:
+    """Get the database session"""
+    db_object = Database()
+    return await db_object.get_session()
+
+
+def get_conversation_repo(
+    db: AsyncSession = Depends(get_db_session),
+) -> ConversationRepository:
     """Get the conversation repository"""
     return ConversationRepository(db)
 

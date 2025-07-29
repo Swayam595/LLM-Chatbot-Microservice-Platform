@@ -1,4 +1,5 @@
 """Reset password schemas"""
+
 from pydantic import BaseModel, EmailStr, Field
 
 

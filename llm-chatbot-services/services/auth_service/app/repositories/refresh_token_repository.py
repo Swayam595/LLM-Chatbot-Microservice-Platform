@@ -1,4 +1,5 @@
 """Repository for refresh token data access"""
+
 from datetime import datetime, timedelta
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select

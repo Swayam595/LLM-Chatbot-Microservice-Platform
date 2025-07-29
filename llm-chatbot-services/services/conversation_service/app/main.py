@@ -2,7 +2,7 @@
 
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
-from shared.database import init_db, shutdown_db
+from shared import Database
 from shared.logger import get_logger
 from app.routes import (
     conversation_router,
@@ -13,15 +13,17 @@ from app.routes import (
 logger = get_logger(service_name="conversation-service")
 logger.info("Starting Conversation Service")
 
+db_object = Database()
+
 
 @asynccontextmanager
 async def lifespan(_fastapi_app: FastAPI):
     """Lifespan for the application"""
     logger.info("Initializing database")
-    await init_db()
+    await db_object.init_db()
     yield
     logger.info("Shutting down database")
-    await shutdown_db()
+    await db_object.shutdown_db()
 
 
 app = FastAPI(lifespan=lifespan)

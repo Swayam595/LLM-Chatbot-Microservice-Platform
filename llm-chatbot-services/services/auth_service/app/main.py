@@ -68,7 +68,8 @@ def health_check():
 
 @app.post("/register")
 async def register(
-    user: UserCreate, user_service: UserService = Depends(get_user_service),
+    user: UserCreate,
+    user_service: UserService = Depends(get_user_service),
 ):
     """Register endpoint"""
     logger.info(f"Registering user: {user.email}")
@@ -77,7 +78,8 @@ async def register(
 
 @app.post("/login")
 async def login(
-    credentials: UserLogin, user_service: UserService = Depends(get_user_service),
+    credentials: UserLogin,
+    user_service: UserService = Depends(get_user_service),
 ):
     """Login Endpoint"""
     logger.info(f"User login attempt: {credentials.email}")
@@ -150,7 +152,9 @@ async def reset_password(
 
 
 @app.get("/me")
-async def read_current_user(current_user: TokenData = Depends(get_current_user),):
+async def read_current_user(
+    current_user: TokenData = Depends(get_current_user),
+):
     """Protected endpoint"""
     logger.info(f"Reading current user: {current_user.email}")
     return {"message": "Registered user", "user": current_user}

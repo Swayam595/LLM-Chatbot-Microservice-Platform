@@ -7,8 +7,10 @@ from .config import DatabaseConfig
 from .engine import DatabaseEngine
 from .session import SessionProvider
 
+
 class Database:
     """Database class"""
+
     def __init__(self):
         """Initialize the database"""
         self._config = DatabaseConfig()
@@ -25,12 +27,10 @@ class Database:
         generator = self.get_db()
         return await generator.__anext__()
 
-
     async def init_db(self):
         """Create all tables."""
         async with self._engine.engine.begin() as conn:
             await conn.run_sync(Base.metadata.create_all)
-
 
     async def shutdown_db(self):
         """Shutdown the database."""

@@ -14,7 +14,9 @@ class ResetPasswordService:
     """Service for resetting passwords"""
 
     def __init__(
-        self, app_config: AppConfig, user_repository: UserRepository,
+        self,
+        app_config: AppConfig,
+        user_repository: UserRepository,
     ):
         """Initialize the refresh token service"""
         self.app_config = app_config

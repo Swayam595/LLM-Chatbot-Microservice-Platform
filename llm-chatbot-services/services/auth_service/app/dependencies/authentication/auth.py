@@ -1,6 +1,5 @@
 """Module for the auth dependencies"""
 
-
 from typing import Annotated
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
@@ -65,7 +64,11 @@ async def validate_refresh_token(
         user_repository=user_repository,
         refresh_token_repository=refresh_token_repository,
     )
-    return ValidatedToken(token=token, email=token_data.email, role=token_data.role,)
+    return ValidatedToken(
+        token=token,
+        email=token_data.email,
+        role=token_data.role,
+    )
 
 
 async def validate_forgot_password_token(

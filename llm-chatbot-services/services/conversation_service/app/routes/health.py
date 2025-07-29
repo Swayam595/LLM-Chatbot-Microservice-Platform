@@ -4,9 +4,12 @@ from fastapi import APIRouter, HTTPException, status
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import text
 from app.services.redis import get_redis_client
-from app.dependencies.dependency_factory import get_app_config, get_vector_db_service
+from app.dependencies.dependency_factory import (
+    get_app_config,
+    get_vector_db_service,
+    get_db_session,
+)
 from shared import get_logger
-from shared.database import get_db
 
 logger = get_logger(service_name="conversation_service")
 
@@ -73,9 +76,8 @@ async def _check_postgres_connection():
     postgres_health_status = {}
     try:
         logger.info("Checking Postgres connection")
-        async for db in get_db():
-            await db.execute(text("SELECT 1"))
-            break
+        db = await get_db_session()
+        await db.execute(text("SELECT 1"))
         postgres_health_status["status"] = "ok"
         postgres_health_status["detail"] = "Postgres connection is healthy"
     except SQLAlchemyError as e:
