@@ -5,7 +5,7 @@ from fastapi import FastAPI, Depends
 from shared import get_logger
 from shared import Database
 from config import AppConfig
-
+from app.routes import health_router
 from app.services.refresh_token_service import RefreshTokenService
 from app.schemas import (
     UserCreate,
@@ -38,6 +38,7 @@ from app.services.reset_password_service import ResetPasswordService
 logger = get_logger(service_name="auth_service")
 db_object = Database()
 
+logger.info("Auth Service is starting up")
 
 @asynccontextmanager
 async def lifespan(_fastapi_app: FastAPI):
@@ -51,20 +52,14 @@ async def lifespan(_fastapi_app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
+app.include_router(health_router)
+
 
 @app.get("/")
 def read_root():
     """Root endpoint"""
     logger.info("Root endpoint called")
     return {"message": "Auth Service is running"}
-
-
-@app.get("/health")
-def health_check():
-    """Health check endpoint"""
-    logger.info("Health check called")
-    return {"status": "ok"}
-
 
 @app.post("/register")
 async def register(
