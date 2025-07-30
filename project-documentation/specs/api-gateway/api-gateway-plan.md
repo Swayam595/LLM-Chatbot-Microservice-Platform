@@ -51,7 +51,7 @@ api_gateway/
 | Task                          | Status | Notes                                               |
 | ----------------------------- | ------ | --------------------------------------------------- |
 | Basic in-memory rate limiting | [ ]      | Per-IP based window (temporary)                     |
-| Redis-backed limiter          | \2b1c  | Planned for later (production-ready implementation) |
+| Redis-backed limiter          | [ ]  | Planned for later (production-ready implementation) |
 
 ---
 
@@ -60,7 +60,7 @@ api_gateway/
 | Task                     | Status | Notes                            |
 | ------------------------ | ------ | -------------------------------- |
 | Log method, path, status | [ ]      | Middleware added for logging     |
-| Add request ID tracing   | \2b1c  | Optional, for cross-service logs |
+| Add request ID tracing   | [ ]  | Optional, for cross-service logs |
 
 ---
 
@@ -103,10 +103,10 @@ api_gateway/
 
 ## 🔮 Future Enhancements
 
-* \2b1c Add JWT verification locally for fallback (optional)
-* \2b1c Add request ID in headers for tracing
-* \2b1c Add circuit breaker or retry with `tenacity`
-* \2b1c Implement service registry / discovery (later)
+* [ ] Add JWT verification locally for fallback (optional)
+* [ ] Add request ID in headers for tracing
+* [ ] Add circuit breaker or retry with `tenacity`
+* [ ] Implement service registry / discovery (later)
 
 ---
 
