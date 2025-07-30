@@ -1,17 +1,18 @@
 """Module for the api-gateway service"""
 
 from fastapi import FastAPI
+from shared import get_logger
+from app.routes import health_router
+
+logger = get_logger(service_name="api_gateway")
 
 app = FastAPI()
 
+logger.info("API Gateway service is up and running.")
 
 @app.get("/")
 def read_root():
     """Health check endpoint"""
     return {"message": "Api-Gateway Service is running"}
 
-
-@app.get("/health")
-def health_check():
-    """Health check endpoint"""
-    return {"status": "ok"}
+app.include_router(health_router)
