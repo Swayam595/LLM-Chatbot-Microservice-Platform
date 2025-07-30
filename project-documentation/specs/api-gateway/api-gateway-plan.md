@@ -31,9 +31,9 @@ api_gateway/
 
 | Task                                               | Status | Notes                                    |
 | -------------------------------------------------- | ------ | ---------------------------------------- |
-| Route `/chatbot/chat` to chatbot-service           | ⬜      | Uses internal DNS `chatbot-service:8002` |
-| Route `/auth/verify` to auth-service               | ⬜      | Verifies token via `/verify-token`       |
-| Route `/conversations/...` to conversation-service | ⬜      | Needed for context and storing messages  |
+| Route `/chatbot/chat` to chatbot-service           | ✅      | Uses internal DNS `chatbot-service:8002` |
+| Route `/auth/verify` to auth-service               | ✅      | Verifies token via `/verify-token`       |
+| Route `/conversations/...` to conversation-service | ✅      | Needed for context and storing messages  |
 
 ---
 

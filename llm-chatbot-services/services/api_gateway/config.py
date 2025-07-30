@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+
 class ConfigError(Exception):
     """Raised when required config values are missing"""
 
@@ -21,7 +22,7 @@ class AppConfig:
     AUTH_SERVICE_URL: str | None = None
     CHATBOT_SERVICE_URL: str | None = None
     CONVERSATION_SERVICE_URL: str | None = None
-    
+
     def __init__(self):
         self.__set_config()
         self.__validate_config()
@@ -35,12 +36,10 @@ class AppConfig:
     def __validate_config(self):
         """Validate the config"""
         if not self.AUTH_SERVICE_URL:
-            raise ConfigError("AUTH_SERVICE_URL is not set") 
-        
+            raise ConfigError("AUTH_SERVICE_URL is not set")
+
         if not self.CHATBOT_SERVICE_URL:
             raise ConfigError("CHATBOT_SERVICE_URL is not set")
-        
+
         if not self.CONVERSATION_SERVICE_URL:
             raise ConfigError("CONVERSATION_SERVICE_URL is not set")
-        
-        
