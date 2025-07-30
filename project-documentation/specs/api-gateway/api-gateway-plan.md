@@ -31,9 +31,9 @@ api_gateway/
 
 | Task                                               | Status | Notes                                    |
 | -------------------------------------------------- | ------ | ---------------------------------------- |
-| Route `/chatbot/chat` to chatbot-service           | [ ]      | Uses internal DNS `chatbot-service:8002` |
-| Route `/auth/verify` to auth-service               | [ ]      | Verifies token via `/verify-token`       |
-| Route `/conversations/...` to conversation-service | [ ]      | Needed for context and storing messages  |
+| Route `/chatbot/chat` to chatbot-service           | ⬜      | Uses internal DNS `chatbot-service:8002` |
+| Route `/auth/verify` to auth-service               | ⬜      | Verifies token via `/verify-token`       |
+| Route `/conversations/...` to conversation-service | ⬜      | Needed for context and storing messages  |
 
 ---
 
@@ -41,8 +41,8 @@ api_gateway/
 
 | Task                             | Status | Notes                                  |
 | -------------------------------- | ------ | -------------------------------------- |
-| Middleware to intercept requests | [ ]      | Skips `/auth` routes                   |
-| Forward token to auth-service    | [ ]      | Handles 401 and service unavailability |
+| Middleware to intercept requests | ⬜      | Skips `/auth` routes                   |
+| Forward token to auth-service    | ⬜      | Handles 401 and service unavailability |
 
 ---
 
@@ -50,8 +50,8 @@ api_gateway/
 
 | Task                          | Status | Notes                                               |
 | ----------------------------- | ------ | --------------------------------------------------- |
-| Basic in-memory rate limiting | [ ]      | Per-IP based window (temporary)                     |
-| Redis-backed limiter          | [ ]  | Planned for later (production-ready implementation) |
+| Basic in-memory rate limiting | ⬜      | Per-IP based window (temporary)                     |
+| Redis-backed limiter          | ⬜  | Planned for later (production-ready implementation) |
 
 ---
 
@@ -59,8 +59,8 @@ api_gateway/
 
 | Task                     | Status | Notes                            |
 | ------------------------ | ------ | -------------------------------- |
-| Log method, path, status | [ ]      | Middleware added for logging     |
-| Add request ID tracing   | [ ]  | Optional, for cross-service logs |
+| Log method, path, status | ⬜      | Middleware added for logging     |
+| Add request ID tracing   | ⬜  | Optional, for cross-service logs |
 
 ---
 
@@ -68,8 +68,8 @@ api_gateway/
 
 | Task                                | Status | Notes                                |
 | ----------------------------------- | ------ | ------------------------------------ |
-| Abstract `httpx` forwarder function | [ ]      | Used for GET, POST to other services |
-| Error handling around timeouts      | [ ]      | Graceful fallback w/ `503` or retry  |
+| Abstract `httpx` forwarder function | ⬜      | Used for GET, POST to other services |
+| Error handling around timeouts      | ⬜      | Graceful fallback w/ `503` or retry  |
 
 ---
 
@@ -77,8 +77,8 @@ api_gateway/
 
 | Task                                    | Status | Notes                                        |
 | --------------------------------------- | ------ | -------------------------------------------- |
-| ServiceError wrapper                    | [ ]      | Uniform error reporting                      |
-| Handle 4xx/5xx from downstream services | [ ]      | Translates httpx errors to FastAPI responses |
+| ServiceError wrapper                    | ⬜      | Uniform error reporting                      |
+| Handle 4xx/5xx from downstream services | ⬜      | Translates httpx errors to FastAPI responses |
 
 ---
 
@@ -86,8 +86,8 @@ api_gateway/
 
 | Task                   | Status | Notes                       |
 | ---------------------- | ------ | --------------------------- |
-| Add OpenAPI tags       | [ ]      | Group routes by service     |
-| Customize API metadata | [ ]      | Title, description, version |
+| Add OpenAPI tags       | ⬜      | Group routes by service     |
+| Customize API metadata | ⬜      | Title, description, version |
 
 ---
 
@@ -103,10 +103,10 @@ api_gateway/
 
 ## 🔮 Future Enhancements
 
-* [ ] Add JWT verification locally for fallback (optional)
-* [ ] Add request ID in headers for tracing
-* [ ] Add circuit breaker or retry with `tenacity`
-* [ ] Implement service registry / discovery (later)
+* ⬜ Add JWT verification locally for fallback (optional)
+* ⬜ Add request ID in headers for tracing
+* ⬜ Add circuit breaker or retry with `tenacity`
+* ⬜ Implement service registry / discovery (later)
 
 ---
 
