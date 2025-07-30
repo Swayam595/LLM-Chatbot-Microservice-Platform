@@ -49,8 +49,8 @@ This markdown outlines the step-by-step implementation plan for the `chatbot-ser
 ---
 
 ## 7. 🛡️ Error Handling & Logging
-- [ ] Log each request and response (basic info)
-- [ ] Gracefully handle downstream service failures
+- ✅ Log each request and response (basic info)
+- ✅ Gracefully handle downstream service failures
 - [ ] Add retry/backoff logic (optional enhancement)
 
 ---
