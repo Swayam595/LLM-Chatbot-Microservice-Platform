@@ -7,6 +7,7 @@ import httpx
 from config import AppConfig
 from shared import get_logger
 from starlette.datastructures import URL
+from app.middleware.public_path import public_paths
 
 logger = get_logger(service_name="api_gateway")
 
@@ -17,13 +18,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
     def __init__(self, app, app_config: AppConfig):
         super().__init__(app)
         self.app_config = app_config
-        self._public_paths = {
-            ("GET", "/auth/me"),
-            ("POST", "/auth/login"),
-            ("POST", "/auth/register"),
-            ("POST", "/auth/forgot-password"),
-            ("POST", "/auth/reset-password"),
-        }
+        self._public_paths = public_paths
 
     async def dispatch(self, request: Request, call_next):
         """Dispatch the request"""
