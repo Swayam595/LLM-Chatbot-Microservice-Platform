@@ -41,8 +41,8 @@ api_gateway/
 
 | Task                             | Status | Notes                                  |
 | -------------------------------- | ------ | -------------------------------------- |
-| Middleware to intercept requests | ⬜      | Skips `/auth` routes                   |
-| Forward token to auth-service    | ⬜      | Handles 401 and service unavailability |
+| Middleware to intercept requests | ✅      | Skips `/auth` routes                   |
+| Forward token to auth-service    | ✅     | Handles 401 and service unavailability |
 
 ---
 
@@ -103,7 +103,6 @@ api_gateway/
 
 ## 🔮 Future Enhancements
 
-* ⬜ Add JWT verification locally for fallback (optional)
 * ⬜ Add request ID in headers for tracing
 * ⬜ Add circuit breaker or retry with `tenacity`
 * ⬜ Implement service registry / discovery (later)

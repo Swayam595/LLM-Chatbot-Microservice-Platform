@@ -34,6 +34,10 @@ format:
 test:
 	pytest -v
 
+build-up:
+	docker-compose build
+	docker-compose up
+
 build-up-auth-service:
 	docker-compose build auth-service
 	docker-compose up auth-service
