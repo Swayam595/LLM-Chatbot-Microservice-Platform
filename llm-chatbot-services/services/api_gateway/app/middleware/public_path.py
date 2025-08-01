@@ -15,6 +15,6 @@ public_paths = {
     ("GET", "/chatbot/health-all"),
     ("GET", "/chatbot/openapi.json"),
     ("GET", "/conversation/health"),
-    ("GET", "/conversation/health-all"),    
+    ("GET", "/conversation/health-all"),
     ("GET", "/conversation/openapi.json"),
 }
