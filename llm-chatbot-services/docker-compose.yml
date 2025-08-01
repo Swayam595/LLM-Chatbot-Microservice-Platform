@@ -1,3 +1,5 @@
+version: "3.9"
+
 services:
   auth-service:
     build:
@@ -5,8 +7,6 @@ services:
       dockerfile: ./services/auth_service/dockerfile
     container_name: auth-service
     command: poetry run uvicorn app.main:app --host 0.0.0.0 --port 8001 --reload
-    ports:
-      - "8001:8001"
     volumes:
       - ./services/auth_service/app:/app/app
       - ./shared:/app/shared
@@ -14,6 +14,10 @@ services:
       - postgres
     environment:
       - DATABASE_URL=postgresql+asyncpg://user:password@postgres:5432/auth_db
+    expose:
+      - "8001"
+    networks:
+      - backend
 
   chatbot-service:
     build:
@@ -21,8 +25,6 @@ services:
       dockerfile: ./services/chatbot_service/dockerfile
     container_name: chatbot-service
     command: poetry run uvicorn app.main:app --host 0.0.0.0 --port 8002 --reload
-    ports:
-      - "8002:8002"
     volumes:
       - ./services/chatbot_service/app:/app/app
       - ./shared:/app/shared
@@ -32,6 +34,10 @@ services:
       - GEMINI_API_KEY=AIzaSyAMOb7GiwTi_P2nv9X6kUvroKifPwhMTeY
       - GEMINI_URL=https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent
       - CONVERSATION_SERVICE_URL=http://conversation-service:8003
+    expose:
+      - "8002"
+    networks:
+      - backend
 
   conversation-service:
     build:
@@ -39,8 +45,6 @@ services:
       dockerfile: ./services/conversation_service/dockerfile
     container_name: conversation-service
     command: poetry run uvicorn app.main:app --host 0.0.0.0 --port 8003 --reload
-    ports:
-      - "8003:8003"
     volumes:
       - ./services/conversation_service/app:/app/app
       - ./shared:/app/shared
@@ -52,6 +56,10 @@ services:
       - DATABASE_URL=postgresql+asyncpg://user:password@postgres:5432/convo_db
       - REDIS_URL=redis://redis:6379
       - CHROMA_DB_URL=http://chromadb:8000
+    expose:
+      - "8003"
+    networks:
+      - backend
 
   api-gateway:
     build:
@@ -59,8 +67,6 @@ services:
       dockerfile: ./services/api_gateway/dockerfile
     container_name: api-gateway
     command: poetry run uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
-    ports:
-      - "8000:8000"
     volumes:
       - ./services/api_gateway/app:/app/app
       - ./shared:/app/shared
@@ -73,32 +79,46 @@ services:
       - CHATBOT_SERVICE_URL=http://chatbot-service:8002
       - CONVERSATION_SERVICE_URL=http://conversation-service:8003
       - REDIS_URL=redis://redis:6379
+    ports:
+      - "8000:8000"
+    networks:
+      - backend
 
   postgres:
     image: postgres:15
     container_name: postgres
-    ports:
-      - "5432:5432"
     environment:
       - POSTGRES_USER=user
       - POSTGRES_PASSWORD=password
     volumes:
-          - ./services/postgres-init/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
+      - ./services/postgres-init/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
+    expose:
+      - "5432"
+    networks:
+      - backend
 
   redis:
     image: redis:7
     container_name: redis
-    ports:
-      - "6379:6379"
-    
+    expose:
+      - "6379"
+    networks:
+      - backend
+
   chromadb:
     image: chromadb/chroma
     container_name: chromadb
     volumes:
       - chroma_data:/chroma/.chroma/index
-    ports:
-      - "8004:8000"
+    expose:
+      - "8000"
+    networks:
+      - backend
 
 volumes:
   postgres_data:
   chroma_data:
+
+networks:
+  backend:
+    driver: bridge
