@@ -50,8 +50,8 @@ api_gateway/
 
 | Task                          | Status | Notes                                               |
 | ----------------------------- | ------ | --------------------------------------------------- |
-| Basic in-memory rate limiting | ⬜      | Per-IP based window (temporary)                     |
-| Redis-backed limiter          | ⬜  | Planned for later (production-ready implementation) |
+| Basic in-memory rate limiting | ✅      | Per-IP based window (temporary)                     |
+| Redis-backed limiter          | ✅  | Planned for later (production-ready implementation) |
 
 ---
 
@@ -59,7 +59,7 @@ api_gateway/
 
 | Task                     | Status | Notes                            |
 | ------------------------ | ------ | -------------------------------- |
-| Log method, path, status | ⬜      | Middleware added for logging     |
+| Log method, path, status | ✅      | Middleware added for logging     |
 | Add request ID tracing   | ⬜  | Optional, for cross-service logs |
 
 ---
