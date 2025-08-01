@@ -2,21 +2,12 @@
 
 import os
 from dotenv import load_dotenv
+from shared import BaseAppConfig, ConfigError
 
 load_dotenv()
 
 
-class ConfigError(Exception):
-    """Raised when required config values are missing"""
-
-    _ERROR_MSG = "❌ {message}"
-
-    def __init__(self, message: str) -> None:
-        self.message = message
-        super().__init__(self._ERROR_MSG.format(message=self.message))
-
-
-class AppConfig:
+class AppConfig(BaseAppConfig):
     """Configuration class for the conversation service"""
 
     REDIS_URL: str | None = None
@@ -25,10 +16,10 @@ class AppConfig:
     CHROMA_DB_URL: str | None = None
 
     def __init__(self):
-        self.__set_config()
-        self.__validate_config()
+        self.set_config()
+        self.validate_config()
 
-    def __set_config(self):
+    def set_config(self):
         """Set the configuration values"""
         self.REDIS_URL = os.getenv("REDIS_URL")
         self.REDIS_CACHE_SIZE = self.__get_redis_cache_size()
@@ -37,7 +28,7 @@ class AppConfig:
         )
         self.CHROMA_DB_URL = os.getenv("CHROMA_DB_URL")
 
-    def __validate_config(self):
+    def validate_config(self):
         """Validate the configuration values"""
         if self.REDIS_URL is None:
             raise ConfigError(

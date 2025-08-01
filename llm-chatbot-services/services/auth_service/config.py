@@ -2,21 +2,12 @@
 
 import os
 from dotenv import load_dotenv
+from shared import BaseAppConfig, ConfigError
 
 load_dotenv()
 
 
-class ConfigError(Exception):
-    """Raised when required config values are missing"""
-
-    _ERROR_MSG = "❌ {message}"
-
-    def __init__(self, message: str) -> None:
-        self.message = message
-        super().__init__(self._ERROR_MSG.format(message=self.message))
-
-
-class AppConfig:
+class AppConfig(BaseAppConfig):
     """Configuration class for the auth service"""
 
     SECRET_KEY: str | None = None
@@ -25,17 +16,17 @@ class AppConfig:
     REFRESH_TOKEN_EXPIRE_MINUTES: int | None = None
 
     def __init__(self):
-        self.__set_config()
-        self.__validate_config()
+        self.set_config()
+        self.validate_config()
 
-    def __set_config(self):
+    def set_config(self):
         """Set the configuration values"""
         self.SECRET_KEY = os.getenv("SECRET_KEY")
         self.ALGORITHM = os.getenv("ALGORITHM")
         self.ACCESS_TOKEN_EXPIRE_MINUTES = self.__get_access_token_expire_minutes()
         self.REFRESH_TOKEN_EXPIRE_MINUTES = self.__get_refresh_token_expire_minutes()
 
-    def __validate_config(self):
+    def validate_config(self):
         """Validate the configuration values"""
         if self.SECRET_KEY is None:
             raise ConfigError(

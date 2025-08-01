@@ -3,11 +3,16 @@
 from .logger import get_logger
 from .base import Base
 from .database import Database
-from .redis import get_redis_client
+from .redis import RedisClient
+from .config_error import ConfigError
+from .base_config import BaseAppConfig
+
 
 __all__ = [
     "get_logger",
     "Base",
     "Database",
-    "get_redis_client",
+    "RedisClient",
+    "ConfigError",
+    "BaseAppConfig",
 ]
