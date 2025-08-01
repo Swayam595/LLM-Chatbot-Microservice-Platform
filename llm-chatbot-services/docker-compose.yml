@@ -72,6 +72,7 @@ services:
       - AUTH_SERVICE_URL=http://auth-service:8001
       - CHATBOT_SERVICE_URL=http://chatbot-service:8002
       - CONVERSATION_SERVICE_URL=http://conversation-service:8003
+      - REDIS_URL=redis://redis:6379
 
   postgres:
     image: postgres:15
