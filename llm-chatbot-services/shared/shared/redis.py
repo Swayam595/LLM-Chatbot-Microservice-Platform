@@ -1,14 +1,28 @@
 """Redis client for the all services."""
 
 import redis.asyncio as redis
-from config import AppConfig
+from .base_config import BaseAppConfig
+import threading
 
-_redis_client = None
 
-def get_redis_client(app_config: AppConfig) -> redis.Redis:
-    """Get the Redis client."""
-    global _redis_client
-    redis_url = app_config.REDIS_URL
-    if not _redis_client:   
-        _redis_client = redis.Redis.from_url(redis_url, decode_responses=True)
-    return _redis_client
+class RedisClient:
+    _instance = None
+    _lock = threading.Lock()
+
+    def __new__(cls, *args, **kwargs):
+        if not cls._instance:
+            with cls._lock:
+                if not cls._instance:
+                    cls._instance = super().__new__(cls)
+        return cls._instance
+
+    def __init__(self, app_config: BaseAppConfig):
+        if not hasattr(self, "initialized"):
+            self.app_config = app_config
+            self.redis_client = None
+            self.initialized = True
+
+    def get_redis_client(self) -> redis.Redis:
+        if not self.redis_client:
+            self.redis_client = redis.Redis.from_url(self.app_config.REDIS_URL, decode_responses=True)
+        return self.redis_client
