@@ -1,7 +1,7 @@
 """Conversation Service"""
 
 import json
-from shared import get_logger, get_redis_client
+from shared import get_logger, RedisClient
 from app.repositories.conversation_repository import ConversationRepository
 from app.schemas.conversation import ConversationCreate, ConversationRead
 from app.models.conversation import Conversation
@@ -15,7 +15,7 @@ class ConversationService:
     def __init__(self, repo: ConversationRepository, app_config: AppConfig):
         """Initialize the service"""
         self.conversation_repo = repo
-        self.redis_client = get_redis_client(app_config)
+        self.redis_client = RedisClient(app_config).get_redis_client()
         self.redis_cache_size = app_config.REDIS_CACHE_SIZE
         self.redis_entry_expiry_time_in_mins = (
             app_config.REDIS_ENTRY_EXPIRY_TIME_IN_MINS

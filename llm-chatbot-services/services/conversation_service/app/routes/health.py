@@ -3,7 +3,7 @@
 from fastapi import APIRouter, HTTPException, status
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import text
-from shared import get_logger, get_redis_client
+from shared import get_logger, RedisClient
 from app.dependencies.dependency_factory import (
     get_app_config,
     get_vector_db_service,
@@ -92,7 +92,7 @@ async def _check_redis_connection():
     redis_health_status = dict()
     try:
         logger.info("Checking Redis connection")
-        redis_client = get_redis_client(app_config)
+        redis_client = RedisClient(app_config).get_redis_client()
         await redis_client.ping()
         redis_health_status["status"] = "ok"
         redis_health_status["detail"] = "Redis connection is healthy"
