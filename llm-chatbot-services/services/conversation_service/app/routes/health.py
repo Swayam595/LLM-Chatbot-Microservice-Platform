@@ -3,8 +3,7 @@
 from fastapi import APIRouter, HTTPException, status
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import text
-from shared import get_logger
-from app.services.redis import get_redis_client
+from shared import get_logger, get_redis_client
 from app.dependencies.dependency_factory import (
     get_app_config,
     get_vector_db_service,

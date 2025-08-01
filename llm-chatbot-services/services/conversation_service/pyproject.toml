@@ -12,7 +12,6 @@ uvicorn = "^0.29.0"
 asyncpg = "^0.30.0"
 sqlalchemy = "^2.0.41"
 shared = {path = "../../shared", develop = true}
-redis = "^6.2.0"
 dotenv = "^0.9.9"
 chromadb = "^1.0.15"
 

@@ -1,11 +1,10 @@
 """Conversation Service"""
 
 import json
-from shared import get_logger
+from shared import get_logger, get_redis_client
 from app.repositories.conversation_repository import ConversationRepository
 from app.schemas.conversation import ConversationCreate, ConversationRead
 from app.models.conversation import Conversation
-from app.services.redis import get_redis_client
 from app.services.vector_db_service import VectorDBService
 from config import AppConfig
 

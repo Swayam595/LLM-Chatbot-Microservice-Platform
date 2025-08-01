@@ -11,11 +11,16 @@ RUN pip install --upgrade pip && pip install poetry
 # Set work directory
 WORKDIR /app
 
-# Copy pyproject and install deps
+# Copy pyproject and shared dependencies
 COPY ./services/api_gateway/pyproject.toml ./services/api_gateway/poetry.lock* /app/
 COPY ./shared /shared/
+
+# Install shared dependencies first
 RUN poetry config virtualenvs.create false \
-    && poetry install --no-interaction --no-ansi --no-root
+    && cd /shared && poetry install --no-interaction --no-ansi
+
+# Install service dependencies
+RUN cd /app && poetry install --no-interaction --no-ansi --no-root
 
 # Copy service code
 COPY ./services/api_gateway/app /app/app

@@ -14,8 +14,13 @@ WORKDIR /app
 # Copy pyproject and install deps
 COPY ./services/chatbot_service/pyproject.toml ./services/chatbot_service/poetry.lock* /app/
 COPY ./shared /shared/
+
+# Install shared dependencies first
 RUN poetry config virtualenvs.create false \
-    && poetry install --no-interaction --no-ansi --no-root
+    && cd /shared && poetry install --no-interaction --no-ansi
+
+# Install service dependencies
+RUN cd /app && poetry install --no-interaction --no-ansi --no-root
 
 # Copy service code
 COPY ./services/chatbot_service/app /app/app
