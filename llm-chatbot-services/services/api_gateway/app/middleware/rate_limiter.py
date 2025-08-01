@@ -1,4 +1,5 @@
 """Rate limiter middleware"""
+
 import time
 import redis.asyncio as redis
 from fastapi import Request
@@ -6,9 +7,13 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from fastapi.responses import JSONResponse
 from shared import get_logger
 
+
 class RedisRateLimitMiddleware(BaseHTTPMiddleware):
     """Rate limiter middleware"""
-    def __init__(self, app, redis_client: redis.Redis, limit: int = 100, window: int = 60):
+
+    def __init__(
+        self, app, redis_client: redis.Redis, limit: int = 100, window: int = 60
+    ):
         """Initialize the rate limiter middleware"""
         super().__init__(app)
         self.redis = redis_client

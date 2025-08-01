@@ -2,6 +2,7 @@
 
 from abc import ABC, abstractmethod
 
+
 class BaseAppConfig(ABC):
     """Configuration class for the all services"""
 

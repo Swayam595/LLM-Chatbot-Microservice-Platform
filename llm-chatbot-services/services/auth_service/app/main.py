@@ -40,6 +40,7 @@ db_object = Database()
 
 logger.info("Auth Service is starting up")
 
+
 @asynccontextmanager
 async def lifespan(_fastapi_app: FastAPI):
     """Lifespan for the application"""
@@ -60,6 +61,7 @@ def read_root():
     """Root endpoint"""
     logger.info("Root endpoint called")
     return {"message": "Auth Service is running"}
+
 
 @app.post("/register")
 async def register(

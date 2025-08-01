@@ -24,5 +24,7 @@ class RedisClient:
 
     def get_redis_client(self) -> redis.Redis:
         if not self.redis_client:
-            self.redis_client = redis.Redis.from_url(self.app_config.REDIS_URL, decode_responses=True)
+            self.redis_client = redis.Redis.from_url(
+                self.app_config.REDIS_URL, decode_responses=True
+            )
         return self.redis_client

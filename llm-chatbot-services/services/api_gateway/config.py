@@ -6,6 +6,7 @@ from shared import BaseAppConfig, ConfigError
 
 load_dotenv()
 
+
 class AppConfig(BaseAppConfig):
     """Configuration class for the API Gateway"""
 

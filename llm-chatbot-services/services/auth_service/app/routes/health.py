@@ -10,6 +10,7 @@ logger = get_logger(service_name="auth_service")
 
 router = APIRouter(prefix="/health", tags=["Service Health"])
 
+
 @router.get("/", status_code=status.HTTP_200_OK, response_model=dict)
 async def health_check() -> dict:
     """Health check endpoint"""
@@ -23,6 +24,7 @@ async def health_check() -> dict:
         "status": "ok",
         "detail": "Auth Service is healthy and it's dependencies are healthy",
     }
+
 
 @router.get("/all", status_code=status.HTTP_200_OK, response_model=dict)
 async def health_check_all() -> dict:
@@ -58,7 +60,13 @@ async def _check_postgres_connection():
         postgres_health_status["detail"] = str(e)
     return postgres_health_status
 
-def _raise_exception_if_dependency_service_is_unhealthy(postgres_health_status: dict) -> None:
+
+def _raise_exception_if_dependency_service_is_unhealthy(
+    postgres_health_status: dict,
+) -> None:
     """Raise an exception if the Postgres connection is unhealthy"""
     if not postgres_health_status["status"] == "ok":
-        raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail=postgres_health_status["detail"])
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail=postgres_health_status["detail"],
+        )
