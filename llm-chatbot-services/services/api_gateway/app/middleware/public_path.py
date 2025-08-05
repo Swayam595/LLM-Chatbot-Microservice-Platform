@@ -1,9 +1,9 @@
 public_paths = {
     ("GET", "/health"),
-    ("GET", "/health-all"),
+    ("GET", "/health/all"),
     ("GET", "/openapi.json"),
     ("GET", "/auth/health"),
-    ("GET", "/auth/health-all"),
+    ("GET", "/auth/health/all"),
     ("GET", "/auth/me"),
     ("GET", "/auth/openapi.json"),
     ("POST", "/auth/login"),
@@ -12,9 +12,9 @@ public_paths = {
     ("POST", "/auth/forgot-password"),
     ("POST", "/auth/reset-password"),
     ("GET", "/chatbot/health"),
-    ("GET", "/chatbot/health-all"),
+    ("GET", "/chatbot/health/all"),
     ("GET", "/chatbot/openapi.json"),
     ("GET", "/conversation/health"),
-    ("GET", "/conversation/health-all"),
+    ("GET", "/conversation/health/all"),
     ("GET", "/conversation/openapi.json"),
 }
