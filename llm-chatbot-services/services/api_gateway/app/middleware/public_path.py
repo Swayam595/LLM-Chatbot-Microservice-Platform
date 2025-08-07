@@ -7,6 +7,7 @@ public_paths = {
     ("GET", "/auth/me"),
     ("GET", "/auth/openapi.json"),
     ("POST", "/auth/login"),
+    ("POST", "/auth/logout"),
     ("POST", "/auth/refresh"),
     ("POST", "/auth/register"),
     ("POST", "/auth/forgot-password"),
