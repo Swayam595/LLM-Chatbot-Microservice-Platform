@@ -1,6 +1,3 @@
-Here’s your deployment checklist as a **Markdown file** (`deployment-checklist.md`):
-
-````markdown
 # Deployment Checklist – LLM Chatbot Service on EC2 (`c7i-flex.large`)
 
 ## 1. EC2 Setup
@@ -17,7 +14,7 @@ Here’s your deployment checklist as a **Markdown file** (`deployment-checklist
 - [ ] **SSH into EC2**
   ```bash
   ssh -i your-key.pem ubuntu@<EC2_PUBLIC_IP>
-````
+  ```
 
 * [ ] **Update Packages**
 
@@ -148,9 +145,4 @@ Here’s your deployment checklist as a **Markdown file** (`deployment-checklist
 * [ ] Check logs for errors
 * [ ] Create snapshot/AMI backup
 
-```
-
----
-
-Do you want me to **also create the one-shot bash installer** that executes *most of this checklist automatically* so you can deploy without doing each step manually? That way you’d just upload the `.md` for docs and run the `.sh` for setup.
 ```
