@@ -1,6 +1,14 @@
 # 🧠 LLM-Powered Chatbot in a Python Microservice Platform
 
 ## [ChatGPT Chat](https://chatgpt.com/share/68780360-a454-8002-8c1d-7a88245b002b)
+## [EC2 Deployment URL](https://api.ssm-chatbot.online/health/all)
+
+The microservices are deployed on an EC2 free-tier instance.  
+Services are available on demand or during **10:00 AM – 5:00 PM IST**.  
+
+A Postman collection is also attached for testing the microservices.  
+
+For on-demand access, please contact me at: **swayam.swaroop175@gmail.com**
 
 A step-by-step implementation roadmap for building an LLM-based chatbot in Python to showcase **backend engineering**, **low-level design (LLD)**, and **AI integration**.
 
