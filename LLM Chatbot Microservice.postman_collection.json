@@ -1,0 +1,799 @@
+{
+	"info": {
+		"_postman_id": "74cae5c3-b6fd-4e62-99a5-7bf08b467859",
+		"name": "LLM Chatbot Microservice",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "5975178"
+	},
+	"item": [
+		{
+			"name": "API Service Health Copy",
+			"item": [
+				{
+					"name": "Service Health",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_ssm_chatbot_baseurl}}/health/",
+							"host": [
+								"{{api_ssm_chatbot_baseurl}}"
+							],
+							"path": [
+								"health",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Service Health All",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_ssm_chatbot_baseurl}}/health/all",
+							"host": [
+								"{{api_ssm_chatbot_baseurl}}"
+							],
+							"path": [
+								"health",
+								"all"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Proxy Copy",
+			"item": [
+				{
+					"name": "Auth Proxy",
+					"item": [
+						{
+							"name": "Service Health",
+							"item": [
+								{
+									"name": "Health",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{auth_ssm_chatbot_baseurl}}/health/",
+											"host": [
+												"{{auth_ssm_chatbot_baseurl}}"
+											],
+											"path": [
+												"health",
+												""
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Health All",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{auth_ssm_chatbot_baseurl}}/health/all",
+											"host": [
+												"{{auth_ssm_chatbot_baseurl}}"
+											],
+											"path": [
+												"health",
+												"all"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Register User",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"username\": \"Swayam13\",\n    \"email\": \"swayam.swaroop175@gmail.com\",\n    \"password\": \"strongpass123\",\n    \"role\": \"admin\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{auth_ssm_chatbot_baseurl}}/register",
+									"host": [
+										"{{auth_ssm_chatbot_baseurl}}"
+									],
+									"path": [
+										"register"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Login User",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// Parse the response body",
+											"const response = pm.response.json();",
+											"",
+											"// Check if access_token exists and set it as a collection variable",
+											"if (response.access_token) {",
+											"    pm.collectionVariables.set(\"proxy_access_token\", response.access_token);",
+											"    console.log(\"Access token saved to collection variables.\");",
+											"} else {",
+											"    console.warn(\"No access_token found in response.\");",
+											"}",
+											"",
+											"if (response.refresh_token) {",
+											"    pm.collectionVariables.set(\"proxy_refresh_token\", response.refresh_token);",
+											"    console.log(\"Refresh token saved to collection variables.\");",
+											"} else {",
+											"    console.warn(\"No refresh_token found in response.\");",
+											"}",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"swayam.swaroop175@gmail.com\",\n    \"password\": \"Very-Strong-Password\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{auth_ssm_chatbot_baseurl}}/login",
+									"host": [
+										"{{auth_ssm_chatbot_baseurl}}"
+									],
+									"path": [
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Forget Password",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// Parse the response body",
+											"const response = pm.response.json();",
+											"",
+											"// Check if access_token exists and set it as a collection variable",
+											"if (response.reset_password_token) {",
+											"    pm.collectionVariables.set(\"reset_password_token\", response.reset_password_token);",
+											"    console.log(\"Reset password token saved to collection variables.\");",
+											"} else {",
+											"    console.warn(\"No access_token found in response.\");",
+											"}"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"swayam.swaroop175@gmail.com\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{auth_ssm_chatbot_baseurl}}/forgot-password",
+									"host": [
+										"{{auth_ssm_chatbot_baseurl}}"
+									],
+									"path": [
+										"forgot-password"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Logout",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{proxy_refresh_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{auth_ssm_chatbot_baseurl}}/logout",
+									"host": [
+										"{{auth_ssm_chatbot_baseurl}}"
+									],
+									"path": [
+										"logout"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Refresh Token",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// Parse the response body",
+											"const response = pm.response.json();",
+											"",
+											"// Check if access_token exists and set it as a collection variable",
+											"if (response.access_token) {",
+											"    pm.collectionVariables.set(\"proxy_access_token\", response.access_token);",
+											"    console.log(\"Access token saved to collection variables.\");",
+											"} else {",
+											"    console.warn(\"No access_token found in response.\");",
+											"}",
+											"",
+											"if (response.refresh_token) {",
+											"    pm.collectionVariables.set(\"proxy_refresh_token\", response.refresh_token);",
+											"    console.log(\"Refresh token saved to collection variables.\");",
+											"} else {",
+											"    console.warn(\"No refresh_token found in response.\");",
+											"}",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{proxy_refresh_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{auth_ssm_chatbot_baseurl}}/refresh",
+									"host": [
+										"{{auth_ssm_chatbot_baseurl}}"
+									],
+									"path": [
+										"refresh"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Me",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{proxy_access_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{auth_ssm_chatbot_baseurl}}/me",
+									"host": [
+										"{{auth_ssm_chatbot_baseurl}}"
+									],
+									"path": [
+										"me"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Admin Dashboard",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{proxy_access_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{auth_ssm_chatbot_baseurl}}/admin-only",
+									"host": [
+										"{{auth_ssm_chatbot_baseurl}}"
+									],
+									"path": [
+										"admin-only"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Reset Password",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"reset_password_token\": \"{{reset_password_token}}\",\n    \"new_password\": \"Very-Strong-Password\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{auth_ssm_chatbot_baseurl}}/reset-password",
+									"host": [
+										"{{auth_ssm_chatbot_baseurl}}"
+									],
+									"path": [
+										"reset-password"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"packages": {},
+								"exec": [
+									"const ec2_url = pm.collectionVariables.get('ec2_url');",
+									"const apiGatewayPort = pm.collectionVariables.get('apiGatewayPort');",
+									"",
+									"const apiGatewayUrl = pm.collectionVariables.get('apiGatewayUrl');",
+									"const authProxyUrl = `${apiGatewayUrl}/auth`",
+									"pm.collectionVariables.set('authProxyUrl', authProxyUrl);",
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"packages": {},
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Chatbot Proxy",
+					"item": [
+						{
+							"name": "Service Health",
+							"item": [
+								{
+									"name": "Health",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{chatbot_ssm_chatbot_baseurl}}/health/",
+											"host": [
+												"{{chatbot_ssm_chatbot_baseurl}}"
+											],
+											"path": [
+												"health",
+												""
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Health All",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{chatbot_ssm_chatbot_baseurl}}/health/all",
+											"host": [
+												"{{chatbot_ssm_chatbot_baseurl}}"
+											],
+											"path": [
+												"health",
+												"all"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Chat",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{proxy_access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"user_id\": 1,\n    \"message\": \"Tell me about Bhubaneswar?\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{chatbot_ssm_chatbot_baseurl}}/chat/",
+									"host": [
+										"{{chatbot_ssm_chatbot_baseurl}}"
+									],
+									"path": [
+										"chat",
+										""
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"packages": {},
+								"exec": [
+									"const baseUrl = pm.collectionVariables.get('baseUrl');",
+									"const apiGatewayPort = pm.collectionVariables.get('apiGatewayPort');",
+									"",
+									"const apiGatewayUrl = `${baseUrl}:${apiGatewayPort}`;",
+									"const chatbotProxyUrl = `${apiGatewayUrl}/chatbot`",
+									"pm.collectionVariables.set('chatbotProxyUrl', chatbotProxyUrl);",
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"packages": {},
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Conversation Proxy",
+					"item": [
+						{
+							"name": "Service Health",
+							"item": [
+								{
+									"name": "Health",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{conversation_ssm_chatbot_baseurl}}/health/",
+											"host": [
+												"{{conversation_ssm_chatbot_baseurl}}"
+											],
+											"path": [
+												"health",
+												""
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Health All",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{conversation_ssm_chatbot_baseurl}}/health/all",
+											"host": [
+												"{{conversation_ssm_chatbot_baseurl}}"
+											],
+											"path": [
+												"health",
+												"all"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "conversations",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{proxy_access_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"user_id\": 1,\n    \"message\": \"I live in old town in BBSR\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{conversation_ssm_chatbot_baseurl}}/conversations/message",
+									"host": [
+										"{{conversation_ssm_chatbot_baseurl}}"
+									],
+									"path": [
+										"conversations",
+										"message"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "User Conversations History",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{proxy_access_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{conversation_ssm_chatbot_baseurl}}/conversations/history?user_id=1",
+									"host": [
+										"{{conversation_ssm_chatbot_baseurl}}"
+									],
+									"path": [
+										"conversations",
+										"history"
+									],
+									"query": [
+										{
+											"key": "user_id",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "User Conversations History",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{proxy_access_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{conversation_ssm_chatbot_baseurl}}/conversations/history?user_id=1",
+									"host": [
+										"{{conversation_ssm_chatbot_baseurl}}"
+									],
+									"path": [
+										"conversations",
+										"history"
+									],
+									"query": [
+										{
+											"key": "user_id",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Semantic-Search",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{proxy_access_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{conversation_ssm_chatbot_baseurl}}/semantic-search/?user_id=1&query=Bhubaneswar",
+									"host": [
+										"{{conversation_ssm_chatbot_baseurl}}"
+									],
+									"path": [
+										"semantic-search",
+										""
+									],
+									"query": [
+										{
+											"key": "user_id",
+											"value": "1"
+										},
+										{
+											"key": "query",
+											"value": "Bhubaneswar"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"packages": {},
+								"exec": [
+									"const baseUrl = pm.collectionVariables.get('baseUrl');",
+									"const apiGatewayPort = pm.collectionVariables.get('apiGatewayPort');",
+									"",
+									"const apiGatewayUrl = `${baseUrl}:${apiGatewayPort}`;",
+									"const conversationProxyUrl = `${apiGatewayUrl}/conversation`",
+									"pm.collectionVariables.set('conversationProxyUrl', conversationProxyUrl);",
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"packages": {},
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "api_ssm_chatbot_baseurl",
+			"value": "https://api.ssm-chatbot.online",
+			"type": "string",
+			"description": {
+				"content": "",
+				"type": "text/plain"
+			}
+		},
+		{
+			"key": "auth_ssm_chatbot_baseurl",
+			"value": "https://auth.ssm-chatbot.online",
+			"type": "string",
+			"description": {
+				"content": "",
+				"type": "text/plain"
+			}
+		},
+		{
+			"key": "conversation_ssm_chatbot_baseurl",
+			"value": "https://conversation.ssm-chatbot.online",
+			"type": "string",
+			"description": {
+				"content": "",
+				"type": "text/plain"
+			}
+		},
+		{
+			"key": "chatbot_ssm_chatbot_baseurl",
+			"value": "https://chatbot.ssm-chatbot.online",
+			"type": "string",
+			"description": {
+				"content": "",
+				"type": "text/plain"
+			}
+		},
+		{
+			"key": "authProxyUrl",
+			"value": ""
+		}
+	]
+}
