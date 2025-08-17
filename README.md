@@ -6,7 +6,7 @@
 The microservices are deployed on an EC2 free-tier instance.  
 Services are available on demand or during **10:00 AM – 5:00 PM IST**.  
 
-A Postman collection is also attached for testing the microservices.  
+A [Postman collection](https://github.com/Swayam595/LLM-Chatbot-Microservice-Platform/blob/main/LLM%20Chatbot%20Microservice.postman_collection.json) is also attached for testing the microservices.  
 
 For on-demand access, please contact me at: **swayam.swaroop175@gmail.com**
 
