@@ -18,6 +18,8 @@ services:
       - "8001"
     networks:
       - backend
+    mem_limit: 512m
+    cpus: 0.50
 
   chatbot-service:
     build:
@@ -38,6 +40,8 @@ services:
       - "8002"
     networks:
       - backend
+    mem_limit: 512m
+    cpus: 0.50
 
   conversation-service:
     build:
@@ -60,6 +64,8 @@ services:
       - "8003"
     networks:
       - backend
+    mem_limit: 512m
+    cpus: 0.50
 
   api-gateway:
     build:
@@ -83,6 +89,8 @@ services:
       - "8000:8000"
     networks:
       - backend
+    mem_limit: 512m
+    cpus: 0.50
 
   postgres:
     image: postgres:15
@@ -96,6 +104,8 @@ services:
       - "5432"
     networks:
       - backend
+    mem_limit: 512m
+    cpus: 0.50
 
   redis:
     image: redis:7
@@ -104,6 +114,8 @@ services:
       - "6379"
     networks:
       - backend
+    mem_limit: 512m
+    cpus: 0.50
 
   chromadb:
     image: chromadb/chroma
@@ -114,6 +126,8 @@ services:
       - "8000"
     networks:
       - backend
+    mem_limit: 512m
+    cpus: 0.50
 
 volumes:
   postgres_data:
